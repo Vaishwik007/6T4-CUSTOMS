@@ -1,0 +1,3 @@
+Drop bike WebP images here under /images/bikes/<brand-slug>/<model-slug>.webp
+Matches lib/data/models.ts slugs. Configurator falls back to SVG silhouettes
+until real images are added.

@@ -1,0 +1,32 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# next
+.next/
+out/
+build/
+
+# env — NEVER commit these
+.env*.local
+.env
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# misc
+.DS_Store
+*.log
+.vscode/
+.idea/
+
+# supabase local
+supabase/.branches
+supabase/.temp
+
+# claude-code / claude-flow runtime state (session-specific, not code)
+.claude/
+.claude-flow/
+.swarm/

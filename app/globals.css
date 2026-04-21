@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #000000;
+  --fg: #e6e6e6;
+  --neon: #ff0000;
+  --neon-glow: 0 0 16px rgba(255, 0, 0, 0.45);
+  --grid: rgba(255, 255, 255, 0.04);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background-image: radial-gradient(ellipse at top, rgba(255, 0, 0, 0.05) 0%, transparent 60%);
+}
+
+/* hide native cursor on devices with hover */
+@media (hover: hover) and (pointer: fine) {
+  body.cursor-active,
+  body.cursor-active * {
+    cursor: none !important;
+  }
+}
+
+/* selection */
+::selection {
+  background: var(--neon);
+  color: #000;
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(#5a0000, #ff0000);
+  border-radius: 0;
+}
+
+/* ----------- utility classes ----------- */
+@layer components {
+  .glass {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .glass-red {
+    background: linear-gradient(135deg, rgba(255, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.4) 100%);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 0, 0, 0.25);
+    box-shadow: inset 0 0 0 1px rgba(255, 0, 0, 0.08);
+  }
+  .neon-edge {
+    position: relative;
+  }
+  .neon-edge::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(255, 0, 0, 0.65);
+    box-shadow:
+      0 0 12px rgba(255, 0, 0, 0.45),
+      inset 0 0 12px rgba(255, 0, 0, 0.18);
+    pointer-events: none;
+    transition: opacity 200ms ease;
+    opacity: 0;
+  }
+  .neon-edge:hover::before,
+  .neon-edge[data-active="true"]::before {
+    opacity: 1;
+  }
+  .text-glow {
+    text-shadow:
+      0 0 8px rgba(255, 0, 0, 0.6),
+      0 0 24px rgba(255, 0, 0, 0.35);
+  }
+  .text-stencil {
+    font-family: var(--font-bebas), Impact, sans-serif;
+    letter-spacing: 0.06em;
+  }
+  .text-display {
+    font-family: var(--font-orbitron), system-ui, sans-serif;
+    letter-spacing: 0.04em;
+  }
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .scanline::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.025) 0px,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+  .btn-mech {
+    @apply relative inline-flex items-center justify-center gap-2 px-6 py-3 text-display text-sm uppercase tracking-widest text-bone bg-carbon border border-neon/40 transition-all duration-200;
+  }
+  .btn-mech:hover {
+    @apply bg-neon-900/40 border-neon shadow-neon text-white;
+  }
+  .btn-mech:active {
+    transform: translateY(1px);
+  }
+  .btn-mech-ghost {
+    @apply relative inline-flex items-center justify-center gap-2 px-6 py-3 text-display text-sm uppercase tracking-widest text-bone border border-white/15 transition-all duration-200;
+  }
+  .btn-mech-ghost:hover {
+    @apply border-neon text-neon;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 text-[10px] uppercase tracking-widest text-bone/70 border border-white/10 bg-white/5;
+  }
+}
+
+/* reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* embla */
+.embla {
+  overflow: hidden;
+}
+.embla__container {
+  display: flex;
+}
+.embla__slide {
+  flex: 0 0 auto;
+  min-width: 0;
+}
