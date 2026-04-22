@@ -1,12 +1,14 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowLeft, Gauge, Zap } from "lucide-react";
 import { getModelsByBrand } from "@/lib/data/models";
 import { BRANDS_BY_SLUG } from "@/lib/data/brands";
 import { useBuildStore } from "@/store/useBuildStore";
+import type { Model } from "@/lib/data/types";
 import { cn } from "@/lib/utils/cn";
 
 export function ModelCarousel() {
@@ -68,56 +70,13 @@ export function ModelCarousel() {
       <div className="embla mt-10" ref={emblaRef}>
         <div className="embla__container gap-4">
           {models.map((model, i) => (
-            <motion.button
+            <ModelCard
               key={model.slug}
-              type="button"
-              onClick={() => onPick(model.slug)}
-              data-cursor="cta"
-              className={cn(
-                "embla__slide group neon-edge relative flex w-[280px] flex-col overflow-hidden bg-carbon p-0 text-left transition-all md:w-[320px]"
-              )}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.015 }}
-              whileHover={{ y: -4 }}
-            >
-              <span className="pointer-events-none absolute left-0 top-0 h-2 w-2 border-l border-t border-neon" />
-              <span className="pointer-events-none absolute right-0 top-0 h-2 w-2 border-r border-t border-neon" />
-              <span className="pointer-events-none absolute bottom-0 left-0 h-2 w-2 border-b border-l border-neon" />
-              <span className="pointer-events-none absolute bottom-0 right-0 h-2 w-2 border-b border-r border-neon" />
-
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-gunmetal to-black">
-                <div className="grid-bg absolute inset-0 opacity-40" />
-                <div
-                  aria-hidden
-                  className="absolute inset-0 opacity-30 transition-opacity duration-300 group-hover:opacity-60"
-                  style={{
-                    background: `radial-gradient(circle at 50% 70%, ${brandMeta.accent}, transparent 70%)`
-                  }}
-                />
-                <BikeGlyph category={model.category} />
-                <div className="absolute left-3 top-3 chip">{model.category}</div>
-              </div>
-
-              <div className="p-5">
-                <h3 className="text-display text-lg font-bold uppercase leading-tight text-bone group-hover:text-neon md:text-xl">
-                  {model.name}
-                </h3>
-                <div className="mt-4 flex items-center gap-4 text-xs text-bone/60">
-                  <span className="inline-flex items-center gap-1">
-                    <Gauge className="h-3 w-3 text-neon" /> {model.engineCc} cc
-                  </span>
-                  {model.hp && (
-                    <span className="inline-flex items-center gap-1">
-                      <Zap className="h-3 w-3 text-neon" /> {model.hp} HP
-                    </span>
-                  )}
-                </div>
-                <div className="mt-3 text-[10px] uppercase tracking-[0.3em] text-bone/40">
-                  {model.yearStart} – {model.yearEnd ?? "Present"}
-                </div>
-              </div>
-            </motion.button>
+              model={model}
+              accent={brandMeta.accent}
+              index={i}
+              onPick={onPick}
+            />
           ))}
         </div>
       </div>
@@ -125,9 +84,85 @@ export function ModelCarousel() {
   );
 }
 
-/** Stylised SVG silhouette varies per category */
+function ModelCard({
+  model,
+  accent,
+  index,
+  onPick
+}: {
+  model: Model;
+  accent: string;
+  index: number;
+  onPick: (slug: string) => void;
+}) {
+  const [imgOk, setImgOk] = useState(!!model.image);
+
+  return (
+    <motion.button
+      type="button"
+      onClick={() => onPick(model.slug)}
+      data-cursor="cta"
+      className={cn(
+        "embla__slide group neon-edge relative flex w-[280px] flex-col overflow-hidden bg-carbon p-0 text-left transition-all md:w-[320px]"
+      )}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.015 }}
+      whileHover={{ y: -4 }}
+    >
+      <span className="pointer-events-none absolute left-0 top-0 z-10 h-2 w-2 border-l border-t border-neon" />
+      <span className="pointer-events-none absolute right-0 top-0 z-10 h-2 w-2 border-r border-t border-neon" />
+      <span className="pointer-events-none absolute bottom-0 left-0 z-10 h-2 w-2 border-b border-l border-neon" />
+      <span className="pointer-events-none absolute bottom-0 right-0 z-10 h-2 w-2 border-b border-r border-neon" />
+
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-gunmetal to-black">
+        <div className="grid-bg absolute inset-0 opacity-40" />
+        <div
+          aria-hidden
+          className="absolute inset-0 opacity-30 transition-opacity duration-300 group-hover:opacity-60"
+          style={{
+            background: `radial-gradient(circle at 50% 70%, ${accent}, transparent 70%)`
+          }}
+        />
+        {model.image && imgOk ? (
+          <Image
+            src={model.image}
+            alt={`${model.name}`}
+            fill
+            sizes="320px"
+            className="relative z-[1] object-cover transition-transform duration-500 group-hover:scale-105"
+            onError={() => setImgOk(false)}
+          />
+        ) : (
+          <BikeGlyph category={model.category} />
+        )}
+        <div className="absolute left-3 top-3 z-[2] chip">{model.category}</div>
+      </div>
+
+      <div className="p-5">
+        <h3 className="text-display text-lg font-bold uppercase leading-tight text-bone group-hover:text-neon md:text-xl">
+          {model.name}
+        </h3>
+        <div className="mt-4 flex items-center gap-4 text-xs text-bone/60">
+          <span className="inline-flex items-center gap-1">
+            <Gauge className="h-3 w-3 text-neon" /> {model.engineCc} cc
+          </span>
+          {model.hp && (
+            <span className="inline-flex items-center gap-1">
+              <Zap className="h-3 w-3 text-neon" /> {model.hp} HP
+            </span>
+          )}
+        </div>
+        <div className="mt-3 text-[10px] uppercase tracking-[0.3em] text-bone/40">
+          {model.yearStart} – {model.yearEnd ?? "Present"}
+        </div>
+      </div>
+    </motion.button>
+  );
+}
+
+/** Stylised SVG silhouette — fallback when model.image is missing or 404s. */
 function BikeGlyph({ category }: { category: string }) {
-  // single glyph that works across categories, slight rotation per type for visual variety
   const rot =
     category === "Cruiser" ? -4 : category === "Supersport" ? 2 : category === "ADV" ? 0 : 0;
   return (

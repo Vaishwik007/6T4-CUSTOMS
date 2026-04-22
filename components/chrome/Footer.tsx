@@ -62,8 +62,11 @@ export function Footer() {
           <p className="mt-6 text-xs text-bone/40">Hyderabad, India</p>
         </div>
       </div>
-      <div className="relative border-t border-white/5 px-4 py-6 text-center text-xs text-bone/40 md:px-8">
-        © {new Date().getFullYear()} 6T4 CUSTOMS · Performance over comfort.
+      <div className="relative flex flex-col items-center justify-between gap-2 border-t border-white/5 px-4 py-6 text-xs text-bone/40 md:flex-row md:px-8">
+        <span>© {new Date().getFullYear()} 6T4 CUSTOMS · Performance over comfort.</span>
+        <Link href="/credits" className="hover:text-neon">
+          Image credits
+        </Link>
       </div>
     </footer>
   );

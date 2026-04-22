@@ -2,6 +2,7 @@
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Zap, Gauge, IndianRupee, Clock } from "lucide-react";
 import { BRANDS_BY_SLUG } from "@/lib/data/brands";
 import { getModel } from "@/lib/data/models";
@@ -31,6 +32,9 @@ export function BikePreview() {
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+
+  const [imgOk, setImgOk] = useState(true);
+  useEffect(() => setImgOk(!!modelMeta?.image), [modelMeta?.image]);
 
   return (
     <div className="sticky top-40 flex min-h-[400px] flex-col">
@@ -74,26 +78,38 @@ export function BikePreview() {
           />
         )}
 
-        {/* bike silhouette */}
-        <svg className="absolute inset-0 m-auto h-4/5 w-4/5" viewBox="0 0 600 400">
-          <defs>
-            <linearGradient id="bikeStroke" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#ff6060" />
-              <stop offset="100%" stopColor="#a00000" />
-            </linearGradient>
-          </defs>
-          <g stroke="url(#bikeStroke)" strokeWidth="2.5" fill="none" strokeLinecap="round">
-            <circle cx="160" cy="280" r="75" />
-            <circle cx="440" cy="280" r="75" />
-            <circle cx="160" cy="280" r="35" />
-            <circle cx="440" cy="280" r="35" />
-            <path d="M 160 280 L 290 170 L 370 170 L 425 240 L 440 280" />
-            <path d="M 290 170 L 250 120 L 320 110" />
-            <path d="M 370 170 L 405 135 L 445 145" />
-            <path d="M 240 200 L 210 235 L 180 260" />
-            <path d="M 305 175 Q 310 200 360 200 Q 380 200 388 175" strokeWidth="4" />
-          </g>
-        </svg>
+        {/* bike imagery — real photo if available, else SVG silhouette */}
+        {modelMeta?.image && imgOk ? (
+          <Image
+            src={modelMeta.image}
+            alt={`${brandMeta?.name ?? ""} ${modelMeta.name}`}
+            fill
+            sizes="(max-width: 768px) 100vw, 600px"
+            className="relative z-[1] object-contain p-4"
+            onError={() => setImgOk(false)}
+            priority
+          />
+        ) : (
+          <svg className="absolute inset-0 m-auto h-4/5 w-4/5" viewBox="0 0 600 400">
+            <defs>
+              <linearGradient id="bikeStroke" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#ff6060" />
+                <stop offset="100%" stopColor="#a00000" />
+              </linearGradient>
+            </defs>
+            <g stroke="url(#bikeStroke)" strokeWidth="2.5" fill="none" strokeLinecap="round">
+              <circle cx="160" cy="280" r="75" />
+              <circle cx="440" cy="280" r="75" />
+              <circle cx="160" cy="280" r="35" />
+              <circle cx="440" cy="280" r="35" />
+              <path d="M 160 280 L 290 170 L 370 170 L 425 240 L 440 280" />
+              <path d="M 290 170 L 250 120 L 320 110" />
+              <path d="M 370 170 L 405 135 L 445 145" />
+              <path d="M 240 200 L 210 235 L 180 260" />
+              <path d="M 305 175 Q 310 200 360 200 Q 380 200 388 175" strokeWidth="4" />
+            </g>
+          </svg>
+        )}
 
         {/* scanline */}
         <div className="scanline pointer-events-none absolute inset-0" />

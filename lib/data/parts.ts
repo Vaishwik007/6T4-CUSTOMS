@@ -620,6 +620,12 @@ export const PARTS: Part[] = [
   }
 ];
 
+// Auto-assign default image paths for every part (can be overridden per-part
+// later by editing the entry). UI falls back to category icon if file missing.
+for (const p of PARTS) {
+  if (!p.images) p.images = [`/images/parts/${p.id}.webp`];
+}
+
 export const PARTS_BY_ID: Record<string, Part> = Object.fromEntries(PARTS.map((p) => [p.id, p]));
 
 export const PART_CATEGORIES: PartCategory[] = [

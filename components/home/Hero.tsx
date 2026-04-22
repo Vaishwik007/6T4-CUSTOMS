@@ -3,36 +3,73 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ChevronRight, Activity } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 export function Hero() {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [videoOk, setVideoOk] = useState(true);
+  const [posterOk, setPosterOk] = useState(true);
+
+  // Pause video if user prefers reduced motion
+  useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce && videoRef.current) {
+      videoRef.current.pause();
+    }
+  }, []);
+
   return (
     <section className="relative isolate flex min-h-screen items-center overflow-hidden">
       {/* layered backdrop */}
-      <div className="absolute inset-0 -z-20 bg-gradient-to-b from-black via-black to-carbon" />
+      <div className="absolute inset-0 -z-30 bg-gradient-to-b from-black via-black to-carbon" />
+
+      {/* cinematic bike video — falls back to poster image, then to SVG silhouette */}
+      {videoOk ? (
+        <video
+          ref={videoRef}
+          className="absolute inset-0 -z-20 h-full w-full object-cover opacity-40 mix-blend-screen"
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster="/images/hero.webp"
+          onError={() => setVideoOk(false)}
+        >
+          <source src="/video/hero-loop.mp4" type="video/mp4" />
+        </video>
+      ) : posterOk ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src="/images/hero.webp"
+          alt=""
+          className="absolute inset-0 -z-20 h-full w-full object-cover opacity-40 mix-blend-screen"
+          onError={() => setPosterOk(false)}
+        />
+      ) : (
+        <svg
+          className="absolute right-[-10%] top-1/2 -z-20 h-[120%] w-[80%] -translate-y-1/2 opacity-20 mix-blend-screen"
+          viewBox="0 0 600 400"
+          fill="none"
+        >
+          <defs>
+            <linearGradient id="bikeGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#ff0000" />
+              <stop offset="100%" stopColor="#3d0000" />
+            </linearGradient>
+          </defs>
+          <g stroke="url(#bikeGrad)" strokeWidth="1.5" fill="none">
+            <circle cx="140" cy="280" r="80" />
+            <circle cx="460" cy="280" r="80" />
+            <path d="M 140 280 L 280 180 L 360 180 L 420 240 L 460 280" />
+            <path d="M 280 180 L 230 130 L 290 110" />
+            <path d="M 360 180 L 410 140 L 450 150" />
+            <path d="M 250 200 L 220 240 L 180 260" />
+          </g>
+        </svg>
+      )}
+
       <div className="grid-bg absolute inset-0 -z-10 opacity-40" />
       <div className="absolute inset-0 -z-10 bg-radial-glow" />
-      {/* large background bike silhouette via SVG */}
-      <svg
-        className="absolute right-[-10%] top-1/2 -z-10 h-[120%] w-[80%] -translate-y-1/2 opacity-20 mix-blend-screen"
-        viewBox="0 0 600 400"
-        fill="none"
-      >
-        <defs>
-          <linearGradient id="bikeGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#ff0000" />
-            <stop offset="100%" stopColor="#3d0000" />
-          </linearGradient>
-        </defs>
-        {/* Stylised motorcycle silhouette */}
-        <g stroke="url(#bikeGrad)" strokeWidth="1.5" fill="none">
-          <circle cx="140" cy="280" r="80" />
-          <circle cx="460" cy="280" r="80" />
-          <path d="M 140 280 L 280 180 L 360 180 L 420 240 L 460 280" />
-          <path d="M 280 180 L 230 130 L 290 110" />
-          <path d="M 360 180 L 410 140 L 450 150" />
-          <path d="M 250 200 L 220 240 L 180 260" />
-        </g>
-      </svg>
 
       {/* red flicker */}
       <div className="pointer-events-none absolute inset-0 -z-10 animate-flicker bg-radial-glow opacity-60" />

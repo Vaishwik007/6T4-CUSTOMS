@@ -2,13 +2,35 @@
 
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Check, Plus, ShoppingCart, Volume2 } from "lucide-react";
+import Image from "next/image";
+import {
+  ArrowLeft,
+  Check,
+  Plus,
+  ShoppingCart,
+  Volume2,
+  Flame,
+  Cpu,
+  Wind,
+  Wrench,
+  Palette,
+  WrenchIcon
+} from "lucide-react";
 import { PART_CATEGORIES, getCompatiblePartsByCategory } from "@/lib/data/parts";
 import type { Part, PartCategory } from "@/lib/data/types";
 import { useBuildStore } from "@/store/useBuildStore";
 import { useCartStore } from "@/store/useCartStore";
 import { formatPrice } from "@/lib/utils/formatPrice";
 import { cn } from "@/lib/utils/cn";
+
+const CATEGORY_ICON: Record<PartCategory, typeof Flame> = {
+  Exhaust: Flame,
+  "ECU Tuning": Cpu,
+  "Air Filter": Wind,
+  "Performance Kit": Wrench,
+  Cosmetic: Palette,
+  "Service Kit": WrenchIcon
+};
 
 export function PartsPanel() {
   const { brand, model, year, selectedParts, togglePart, setStep } = useBuildStore();
@@ -139,14 +161,19 @@ export function PartsPanel() {
                 <span className="pointer-events-none absolute bottom-0 left-0 h-2 w-2 border-b border-l border-neon" />
                 <span className="pointer-events-none absolute bottom-0 right-0 h-2 w-2 border-b border-r border-neon" />
 
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-[10px] uppercase tracking-[0.3em] text-neon">{p.brand}</p>
-                    <h3 className="mt-1 text-display text-base font-bold uppercase leading-tight text-bone">
-                      {p.name}
-                    </h3>
+                <div className="flex items-start gap-3">
+                  <PartThumb part={p} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <p className="text-[10px] uppercase tracking-[0.3em] text-neon">{p.brand}</p>
+                        <h3 className="mt-1 text-display text-base font-bold uppercase leading-tight text-bone">
+                          {p.name}
+                        </h3>
+                      </div>
+                      <CompatibilityBadge universal={p.compatibility === "universal"} />
+                    </div>
                   </div>
-                  <CompatibilityBadge universal={p.compatibility === "universal"} />
                 </div>
 
                 <p className="mt-3 text-xs text-bone/60">{p.description}</p>
@@ -221,6 +248,29 @@ export function PartsPanel() {
           <ShoppingCart className="h-4 w-4" /> View Cart
         </a>
       </div>
+    </div>
+  );
+}
+
+function PartThumb({ part }: { part: Part }) {
+  const [ok, setOk] = useState(!!part.images?.[0]);
+  const primary = part.images?.[0];
+  const Icon = CATEGORY_ICON[part.category];
+
+  return (
+    <div className="relative grid h-16 w-16 shrink-0 place-items-center overflow-hidden border border-white/10 bg-black/60">
+      {primary && ok ? (
+        <Image
+          src={primary}
+          alt={part.name}
+          fill
+          sizes="64px"
+          className="object-cover"
+          onError={() => setOk(false)}
+        />
+      ) : (
+        <Icon className="h-6 w-6 text-neon/70" />
+      )}
     </div>
   );
 }

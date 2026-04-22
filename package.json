@@ -13,7 +13,8 @@
     "clean": "node scripts/clean.mjs",
     "migrate": "tsx scripts/apply-migrations.ts",
     "seed": "tsx scripts/seed-supabase.ts",
-    "setup": "tsx scripts/setup.ts"
+    "setup": "tsx scripts/setup.ts",
+    "fetch-images": "tsx scripts/fetch-images.ts"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -44,6 +45,7 @@
     "react-hook-form": "^7.53.0",
     "recharts": "^2.13.0",
     "resend": "^6.12.2",
+    "sharp": "^0.34.5",
     "tailwind-merge": "^2.5.4",
     "zod": "^3.23.8",
     "zustand": "^5.0.0"

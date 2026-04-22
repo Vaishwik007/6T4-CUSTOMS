@@ -9,7 +9,17 @@ const m = (
   hp: number,
   yearStart: number,
   yearEnd: number | null = null
-): Model => ({ brand, slug, name, category, engineCc, hp, yearStart, yearEnd });
+): Model => ({
+  brand,
+  slug,
+  name,
+  category,
+  engineCc,
+  hp,
+  yearStart,
+  yearEnd,
+  image: `/images/bikes/${brand}/${slug}.webp`
+});
 
 export const MODELS: Model[] = [
   // ROYAL ENFIELD

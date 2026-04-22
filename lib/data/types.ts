@@ -8,9 +8,22 @@ export type Brand = {
   founded: number;
   accent: string;
   tagline?: string;
+  /** /images/brands/<slug>.svg — official logo. Falls back to wordmark. */
+  logo?: string;
+  /** /images/brands/<slug>-hero.webp — representative bike photo for carousel card bg. */
+  heroImage?: string;
 };
 
-export type ModelCategory = "Naked" | "Supersport" | "Cruiser" | "Touring" | "ADV" | "Scrambler" | "Cafe Racer" | "Commuter" | "Modern Classic";
+export type ModelCategory =
+  | "Naked"
+  | "Supersport"
+  | "Cruiser"
+  | "Touring"
+  | "ADV"
+  | "Scrambler"
+  | "Cafe Racer"
+  | "Commuter"
+  | "Modern Classic";
 
 export type Model = {
   slug: string;
@@ -21,9 +34,17 @@ export type Model = {
   hp?: number;
   yearStart: number;
   yearEnd: number | null;
+  /** /images/bikes/<brand>/<model>.webp — studio shot. Falls back to SVG silhouette. */
+  image?: string;
 };
 
-export type PartCategory = "Exhaust" | "ECU Tuning" | "Air Filter" | "Performance Kit" | "Cosmetic" | "Service Kit";
+export type PartCategory =
+  | "Exhaust"
+  | "ECU Tuning"
+  | "Air Filter"
+  | "Performance Kit"
+  | "Cosmetic"
+  | "Service Kit";
 
 export type CompatibilityRule = {
   brand: string;
@@ -43,6 +64,8 @@ export type Part = {
   soundDb?: number;
   installMinutes?: number;
   compatibility: CompatibilityRule[] | "universal";
+  /** /images/parts/<id>.webp — primary image is first element. */
+  images?: string[];
 };
 
 export type CartItem = {

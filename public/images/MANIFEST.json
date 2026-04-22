@@ -1,0 +1,58 @@
+[
+  {
+    "asset": "/images/brands/honda.svg",
+    "sourceUrl": "https://cdn.simpleicons.org/honda/cc0000",
+    "license": "simple-icons",
+    "attribution": "Simple Icons (MIT)",
+    "fetchedAt": "2026-04-22T05:35:37.605Z",
+    "bytes": 1773
+  },
+  {
+    "asset": "/images/brands/yamaha.svg",
+    "sourceUrl": "https://cdn.simpleicons.org/yamahamotorcorporation/0033a0",
+    "license": "simple-icons",
+    "attribution": "Simple Icons (MIT)",
+    "fetchedAt": "2026-04-22T05:35:37.759Z",
+    "bytes": 1901
+  },
+  {
+    "asset": "/images/brands/suzuki.svg",
+    "sourceUrl": "https://cdn.simpleicons.org/suzuki/0a3d91",
+    "license": "simple-icons",
+    "attribution": "Simple Icons (MIT)",
+    "fetchedAt": "2026-04-22T05:35:37.914Z",
+    "bytes": 364
+  },
+  {
+    "asset": "/images/brands/ktm.svg",
+    "sourceUrl": "https://cdn.simpleicons.org/ktm/ff6600",
+    "license": "simple-icons",
+    "attribution": "Simple Icons (MIT)",
+    "fetchedAt": "2026-04-22T05:35:38.461Z",
+    "bytes": 404
+  },
+  {
+    "asset": "/images/brands/bmw-motorrad.svg",
+    "sourceUrl": "https://cdn.simpleicons.org/bmw/0066b1",
+    "license": "simple-icons",
+    "attribution": "Simple Icons (MIT)",
+    "fetchedAt": "2026-04-22T05:35:38.615Z",
+    "bytes": 1613
+  },
+  {
+    "asset": "/images/brands/ducati.svg",
+    "sourceUrl": "https://cdn.simpleicons.org/ducati/cc0000",
+    "license": "simple-icons",
+    "attribution": "Simple Icons (MIT)",
+    "fetchedAt": "2026-04-22T05:35:38.766Z",
+    "bytes": 1914
+  },
+  {
+    "asset": "/images/brands/husqvarna.svg",
+    "sourceUrl": "https://cdn.simpleicons.org/husqvarna/2864b8",
+    "license": "simple-icons",
+    "attribution": "Simple Icons (MIT)",
+    "fetchedAt": "2026-04-22T05:35:39.203Z",
+    "bytes": 1373
+  }
+]

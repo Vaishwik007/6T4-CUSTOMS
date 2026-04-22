@@ -7,6 +7,8 @@ export const FEATURED_BUILDS: FeaturedBuild[] = [
     bike: "Ducati Panigale V4 S",
     mods: ["Akrapovič Full Ti", "Öhlins NIX30", "Brembo Stylema", "ECU Race Map"],
     hpGain: 18,
+    beforeImage: "/images/featured/panigale-v4-track-before.webp",
+    afterImage: "/images/featured/panigale-v4-track-after.webp",
     dynoData: [
       { rpm: 4000, stockHp: 78, tunedHp: 84 },
       { rpm: 6000, stockHp: 122, tunedHp: 138 },
@@ -22,6 +24,8 @@ export const FEATURED_BUILDS: FeaturedBuild[] = [
     bike: "KTM 890 Duke R",
     mods: ["SC-Project CR-T", "DNA Stage 2", "Stage 2 Flash", "Frame Sliders"],
     hpGain: 11,
+    beforeImage: "/images/featured/duke-890-streetfighter-before.webp",
+    afterImage: "/images/featured/duke-890-streetfighter-after.webp",
     dynoData: [
       { rpm: 3000, stockHp: 42, tunedHp: 48 },
       { rpm: 5000, stockHp: 78, tunedHp: 88 },
@@ -36,6 +40,8 @@ export const FEATURED_BUILDS: FeaturedBuild[] = [
     bike: "Royal Enfield Continental GT 650",
     mods: ["S&S Slip-On", "K&N Filter", "Clip-Ons", "Custom Seat"],
     hpGain: 6,
+    beforeImage: "/images/featured/interceptor-650-cafe-before.webp",
+    afterImage: "/images/featured/interceptor-650-cafe-after.webp",
     dynoData: [
       { rpm: 2500, stockHp: 22, tunedHp: 26 },
       { rpm: 4000, stockHp: 35, tunedHp: 41 },
@@ -49,6 +55,8 @@ export const FEATURED_BUILDS: FeaturedBuild[] = [
     bike: "BMW S 1000 RR",
     mods: ["Akrapovič Slip-On", "ECU Flash", "Öhlins TTX", "Carbon Fairings"],
     hpGain: 14,
+    beforeImage: "/images/featured/s1000rr-streetable-before.webp",
+    afterImage: "/images/featured/s1000rr-streetable-after.webp",
     dynoData: [
       { rpm: 4000, stockHp: 72, tunedHp: 80 },
       { rpm: 7000, stockHp: 138, tunedHp: 152 },
@@ -63,6 +71,8 @@ export const FEATURED_BUILDS: FeaturedBuild[] = [
     bike: "Royal Enfield Himalayan 450",
     mods: ["Givi Outback Panniers", "Barkbusters", "Scotts Stabilizer", "Tall Screen"],
     hpGain: 0,
+    beforeImage: "/images/featured/himalayan-overland-before.webp",
+    afterImage: "/images/featured/himalayan-overland-after.webp",
     dynoData: []
   }
 ];
