@@ -1,12 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
 import { BRANDS } from "@/lib/data/brands";
+import type { Brand } from "@/lib/data/types";
 import { useBuildStore } from "@/store/useBuildStore";
 import { cn } from "@/lib/utils/cn";
 
@@ -54,11 +54,10 @@ export function BrandCarousel() {
 
       <div className="embla mt-10 select-none" ref={emblaRef}>
         <div className="embla__container gap-4">
-          {BRANDS.map((b, i) => (
+          {BRANDS.map((b) => (
             <BrandCard
               key={b.slug}
               brand={b}
-              index={i}
               active={current === b.slug}
               onPick={onSelect}
             />
@@ -69,14 +68,21 @@ export function BrandCarousel() {
   );
 }
 
-function BrandCard({
+/**
+ * Memoised per-card renderer. Prevents re-render of every card whenever the
+ * store's `current` brand changes — only the formerly-active and newly-active
+ * cards re-render (because their `active` prop changes), the other 22 stay put.
+ * Uses CSS hover (`card-lift`) instead of framer-motion `whileHover` to keep
+ * scroll-time JS overhead zero. Entrance animation dropped: staggered opacity
+ * across 24 cards during a horizontal swipe was the single largest source of
+ * frame drops on mid-range mobile.
+ */
+const BrandCard = memo(function BrandCard({
   brand: b,
-  index,
   active,
   onPick
 }: {
-  brand: (typeof BRANDS)[number];
-  index: number;
+  brand: Brand;
   active: boolean;
   onPick: (slug: string) => void;
 }) {
@@ -84,19 +90,15 @@ function BrandCard({
   const [heroOk, setHeroOk] = useState(!!b.heroImage);
 
   return (
-    <motion.button
+    <button
       type="button"
       onClick={() => onPick(b.slug)}
       data-cursor="cta"
       className={cn(
-        "embla__slide neon-edge group relative flex w-[220px] flex-col justify-between overflow-hidden bg-carbon p-5 text-left transition-all duration-200 md:w-[260px]",
+        "embla__slide card-lift neon-edge group relative flex w-[220px] flex-col justify-between overflow-hidden bg-carbon p-5 text-left md:w-[260px]",
         active && "ring-1 ring-neon"
       )}
       style={{ height: 240 }}
-      whileHover={{ y: -4 }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: index * 0.02 }}
     >
       {/* corner ticks */}
       <span className="pointer-events-none absolute left-0 top-0 z-10 h-2 w-2 border-l border-t border-neon" />
@@ -156,6 +158,6 @@ function BrandCard({
         <div className="text-stencil text-xl text-neon">{b.founded}</div>
         <div className="text-[10px] uppercase tracking-[0.3em] text-bone/50">{b.region}</div>
       </div>
-    </motion.button>
+    </button>
   );
-}
+});

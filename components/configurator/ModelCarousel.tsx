@@ -1,9 +1,8 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { ArrowLeft, Gauge, Zap } from "lucide-react";
 import { getModelsByBrand } from "@/lib/data/models";
 import { BRANDS_BY_SLUG } from "@/lib/data/brands";
@@ -69,12 +68,11 @@ export function ModelCarousel() {
 
       <div className="embla mt-10" ref={emblaRef}>
         <div className="embla__container gap-4">
-          {models.map((model, i) => (
+          {models.map((model) => (
             <ModelCard
               key={model.slug}
               model={model}
               accent={brandMeta.accent}
-              index={i}
               onPick={onPick}
             />
           ))}
@@ -84,31 +82,27 @@ export function ModelCarousel() {
   );
 }
 
-function ModelCard({
+/** Memoised card — see BrandCard for rationale. CSS `.card-lift` replaces
+ *  framer-motion `whileHover`; entrance animation dropped for scroll perf. */
+const ModelCard = memo(function ModelCard({
   model,
   accent,
-  index,
   onPick
 }: {
   model: Model;
   accent: string;
-  index: number;
   onPick: (slug: string) => void;
 }) {
   const [imgOk, setImgOk] = useState(!!model.image);
 
   return (
-    <motion.button
+    <button
       type="button"
       onClick={() => onPick(model.slug)}
       data-cursor="cta"
       className={cn(
-        "embla__slide group neon-edge relative flex w-[280px] flex-col overflow-hidden bg-carbon p-0 text-left transition-all md:w-[320px]"
+        "embla__slide card-lift group neon-edge relative flex w-[280px] flex-col overflow-hidden bg-carbon p-0 text-left md:w-[320px]"
       )}
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.015 }}
-      whileHover={{ y: -4 }}
     >
       <span className="pointer-events-none absolute left-0 top-0 z-10 h-2 w-2 border-l border-t border-neon" />
       <span className="pointer-events-none absolute right-0 top-0 z-10 h-2 w-2 border-r border-t border-neon" />
@@ -130,6 +124,7 @@ function ModelCard({
             alt={`${model.name}`}
             fill
             sizes="320px"
+            loading="lazy"
             className="relative z-[1] object-cover transition-transform duration-500 group-hover:scale-105"
             onError={() => setImgOk(false)}
           />
@@ -157,9 +152,9 @@ function ModelCard({
           {model.yearStart} – {model.yearEnd ?? "Present"}
         </div>
       </div>
-    </motion.button>
+    </button>
   );
-}
+});
 
 /** Stylised SVG silhouette — fallback when model.image is missing or 404s. */
 function BikeGlyph({ category }: { category: string }) {

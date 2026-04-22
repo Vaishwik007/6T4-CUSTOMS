@@ -137,13 +137,15 @@ body {
     inset: 0;
     background: repeating-linear-gradient(
       to bottom,
-      rgba(255, 255, 255, 0.025) 0px,
-      rgba(255, 255, 255, 0.025) 1px,
+      rgba(255, 255, 255, 0.04) 0px,
+      rgba(255, 255, 255, 0.04) 1px,
       transparent 1px,
       transparent 3px
     );
     pointer-events: none;
-    mix-blend-mode: overlay;
+    /* Removed `mix-blend-mode: overlay` — compositing cost was ~3ms per frame
+       on mid-range mobile during horizontal scroll. Visual intent preserved by
+       bumping stripe alpha from .025 → .04. */
   }
   .btn-mech {
     @apply relative inline-flex items-center justify-center gap-2 px-6 py-3 text-display text-sm uppercase tracking-widest text-bone bg-carbon border border-neon/40 transition-all duration-200;
@@ -177,14 +179,50 @@ body {
   }
 }
 
-/* embla */
+/* ───── embla carousel — GPU-accelerated scroll ───── */
 .embla {
   overflow: hidden;
+  /* Force a compositor layer for the carousel so scroll transforms are GPU-only */
+  transform: translateZ(0);
 }
 .embla__container {
   display: flex;
+  /* Hint to the browser: the container's transform will change often */
+  will-change: transform;
+  /* Preserve 3D context so child translateZ/transforms composite correctly */
+  transform-style: preserve-3d;
+  /* Don't trigger backdrop-blur repaints on parents during scroll */
+  backface-visibility: hidden;
 }
 .embla__slide {
   flex: 0 0 auto;
   min-width: 0;
+  /* Each slide gets its own layer — isolates per-card paints from neighbours */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Native horizontal scroll containers (non-embla) get momentum + smooth feel */
+.scroll-x {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.scroll-x::-webkit-scrollbar {
+  display: none;
+}
+
+/* Universal card-lift on hover using CSS only — replaces framer-motion
+   `whileHover={{ y: -4 }}` on carousel tiles. Zero JS cost, composited. */
+.card-lift {
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+@media (hover: hover) and (pointer: fine) {
+  .card-lift:hover {
+    transform: translate3d(0, -4px, 0);
+  }
 }
