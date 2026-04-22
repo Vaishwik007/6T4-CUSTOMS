@@ -8,15 +8,7 @@ export const FEATURED_BUILDS: FeaturedBuild[] = [
     mods: ["Akrapovič Full Ti", "Öhlins NIX30", "Brembo Stylema", "ECU Race Map"],
     hpGain: 18,
     beforeImage: "/images/featured/panigale-v4-track-before.webp",
-    afterImage: "/images/featured/panigale-v4-track-after.webp",
-    dynoData: [
-      { rpm: 4000, stockHp: 78, tunedHp: 84 },
-      { rpm: 6000, stockHp: 122, tunedHp: 138 },
-      { rpm: 8000, stockHp: 168, tunedHp: 184 },
-      { rpm: 10000, stockHp: 195, tunedHp: 210 },
-      { rpm: 12000, stockHp: 215, tunedHp: 233 },
-      { rpm: 13500, stockHp: 210, tunedHp: 228 }
-    ]
+    afterImage: "/images/featured/panigale-v4-track-after.webp"
   },
   {
     id: "duke-890-streetfighter",
@@ -25,14 +17,7 @@ export const FEATURED_BUILDS: FeaturedBuild[] = [
     mods: ["SC-Project CR-T", "DNA Stage 2", "Stage 2 Flash", "Frame Sliders"],
     hpGain: 11,
     beforeImage: "/images/featured/duke-890-streetfighter-before.webp",
-    afterImage: "/images/featured/duke-890-streetfighter-after.webp",
-    dynoData: [
-      { rpm: 3000, stockHp: 42, tunedHp: 48 },
-      { rpm: 5000, stockHp: 78, tunedHp: 88 },
-      { rpm: 7000, stockHp: 105, tunedHp: 116 },
-      { rpm: 9000, stockHp: 121, tunedHp: 132 },
-      { rpm: 10500, stockHp: 118, tunedHp: 128 }
-    ]
+    afterImage: "/images/featured/duke-890-streetfighter-after.webp"
   },
   {
     id: "interceptor-650-cafe",
@@ -41,13 +26,7 @@ export const FEATURED_BUILDS: FeaturedBuild[] = [
     mods: ["S&S Slip-On", "K&N Filter", "Clip-Ons", "Custom Seat"],
     hpGain: 6,
     beforeImage: "/images/featured/interceptor-650-cafe-before.webp",
-    afterImage: "/images/featured/interceptor-650-cafe-after.webp",
-    dynoData: [
-      { rpm: 2500, stockHp: 22, tunedHp: 26 },
-      { rpm: 4000, stockHp: 35, tunedHp: 41 },
-      { rpm: 5500, stockHp: 44, tunedHp: 51 },
-      { rpm: 7000, stockHp: 47, tunedHp: 53 }
-    ]
+    afterImage: "/images/featured/interceptor-650-cafe-after.webp"
   },
   {
     id: "s1000rr-streetable",
@@ -56,14 +35,7 @@ export const FEATURED_BUILDS: FeaturedBuild[] = [
     mods: ["Akrapovič Slip-On", "ECU Flash", "Öhlins TTX", "Carbon Fairings"],
     hpGain: 14,
     beforeImage: "/images/featured/s1000rr-streetable-before.webp",
-    afterImage: "/images/featured/s1000rr-streetable-after.webp",
-    dynoData: [
-      { rpm: 4000, stockHp: 72, tunedHp: 80 },
-      { rpm: 7000, stockHp: 138, tunedHp: 152 },
-      { rpm: 10000, stockHp: 188, tunedHp: 204 },
-      { rpm: 12000, stockHp: 207, tunedHp: 224 },
-      { rpm: 13800, stockHp: 200, tunedHp: 218 }
-    ]
+    afterImage: "/images/featured/s1000rr-streetable-after.webp"
   },
   {
     id: "himalayan-overland",
@@ -72,8 +44,7 @@ export const FEATURED_BUILDS: FeaturedBuild[] = [
     mods: ["Givi Outback Panniers", "Barkbusters", "Scotts Stabilizer", "Tall Screen"],
     hpGain: 0,
     beforeImage: "/images/featured/himalayan-overland-before.webp",
-    afterImage: "/images/featured/himalayan-overland-after.webp",
-    dynoData: []
+    afterImage: "/images/featured/himalayan-overland-after.webp"
   }
 ];
 

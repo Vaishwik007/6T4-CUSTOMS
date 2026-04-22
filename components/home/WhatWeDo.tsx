@@ -8,7 +8,7 @@ const ITEMS = [
   {
     Icon: Gauge,
     title: "Tuning",
-    body: "Dyno-mapped fuel + ignition. Stage 1 → Stage 3 builds.",
+    body: "Bench-mapped fuel + ignition. Stage 1 → Stage 3 builds.",
     accent: "Bench-flashed by hand"
   },
   {

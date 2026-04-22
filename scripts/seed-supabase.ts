@@ -80,7 +80,7 @@ async function main() {
       bike: b.bike,
       mods: b.mods,
       hp_gain: b.hpGain,
-      dyno_data: b.dynoData ?? null
+      dyno_data: null
     })),
     { onConflict: "id" }
   );

@@ -25,7 +25,7 @@ export function FeaturedBuilds() {
         <div className="flex flex-wrap items-end justify-between gap-6">
           <SectionHeader
             eyebrow="Featured Builds"
-            title="Recently Off the Dyno."
+            title="Recently Off the Bench."
             subtitle="A taste of what the bench has been chewing through."
             className="mb-0"
           />

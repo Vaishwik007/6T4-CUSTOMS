@@ -6,7 +6,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 
 const STATS = [
   { label: "Bikes Tuned", value: 1247, suffix: "+", accent: "Since 2012" },
-  { label: "HP Added", value: 18420, suffix: "", accent: "On the dyno" },
+  { label: "HP Added", value: 18420, suffix: "", accent: "On the bench" },
   { label: "Years on the Bench", value: 12, suffix: "", accent: "Built brutal" },
   { label: "Brands Supported", value: 24, suffix: "", accent: "ICE only" }
 ];
@@ -41,7 +41,7 @@ export function StatsCounters() {
       <div className="relative mx-auto max-w-[1440px] px-4 md:px-8">
         <SectionHeader
           eyebrow="By the Numbers"
-          title="Receipts on the Dyno."
+          title="Receipts."
           align="center"
         />
         <div className="grid grid-cols-2 gap-px bg-white/5 md:grid-cols-4">

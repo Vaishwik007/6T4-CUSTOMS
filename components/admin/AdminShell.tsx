@@ -112,7 +112,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             </Link>
             {/* live status pulse */}
             <span className="hidden items-center gap-2 border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-green-400 md:inline-flex">
-              <span className="h-1.5 w-1.5 animate-pulse bg-green-400" /> Dyno Online
+              <span className="h-1.5 w-1.5 animate-pulse bg-green-400" /> Bay Online
             </span>
           </div>
 

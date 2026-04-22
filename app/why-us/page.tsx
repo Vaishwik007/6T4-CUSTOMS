@@ -1,19 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Activity, Target, Hammer, Quote, Star } from "lucide-react";
+import { Activity, Hammer, Quote, Star } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { DynoChart } from "@/components/shared/DynoChart";
-import { BeforeAfterSlider } from "@/components/shared/BeforeAfterSlider";
-import { FEATURED_BUILDS, TESTIMONIALS } from "@/lib/data/featured";
+import { TESTIMONIALS } from "@/lib/data/featured";
 
 const PILLARS = [
-  {
-    Icon: Target,
-    title: "Dyno Precision",
-    body: "Every build is AFR-mapped on our in-house dyno. No seat-of-pants guesswork.",
-    metric: "±0.1 AFR"
-  },
   {
     Icon: Activity,
     title: "Premium Sourcing",
@@ -29,10 +21,6 @@ const PILLARS = [
 ];
 
 const TOOLS = [
-  "Dynojet 250iX Dyno",
-  "Woolich RaceTools",
-  "Motec M1",
-  "Rapid Bike Evo",
   "TIG 200 AC/DC",
   "Laser Wheel Alignment",
   "Torque Plates",
@@ -40,8 +28,6 @@ const TOOLS = [
 ];
 
 export default function WhyUsPage() {
-  const featured = FEATURED_BUILDS.find((b) => b.dynoData && b.dynoData.length);
-
   return (
     <>
       {/* Hero */}
@@ -70,8 +56,8 @@ export default function WhyUsPage() {
             transition={{ delay: 0.2 }}
             className="mt-6 max-w-xl text-base text-bone/70 md:text-lg"
           >
-            Every tune is measurable. Every part is traceable. Every weld is inspected. You can
-            read the receipts on the dyno chart.
+            Every part is traceable. Every weld is inspected. Every bike leaves sharper than it
+            came in.
           </motion.p>
         </div>
       </section>
@@ -79,7 +65,7 @@ export default function WhyUsPage() {
       {/* Pillars */}
       <section className="px-4 py-24 md:px-8 md:py-32">
         <div className="mx-auto max-w-[1440px]">
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2">
             {PILLARS.map(({ Icon, title, body, metric }, i) => (
               <motion.article
                 key={title}
@@ -106,58 +92,8 @@ export default function WhyUsPage() {
         </div>
       </section>
 
-      {/* Dyno reveal */}
-      <section className="border-y border-white/5 bg-carbon/40 px-4 py-24 md:px-8 md:py-32">
-        <div className="mx-auto max-w-[1440px] grid gap-12 md:grid-cols-2 md:items-center">
-          <div>
-            <SectionHeader
-              eyebrow="Receipts"
-              title="Read the Graph."
-              subtitle="Before vs after on a real build. Peak gains + area under the curve."
-              className="mb-8"
-            />
-            {featured && (
-              <ul className="space-y-2 text-sm text-bone/70">
-                <li>
-                  <span className="text-neon">Bike:</span> {featured.bike}
-                </li>
-                <li>
-                  <span className="text-neon">Mods:</span> {featured.mods.join(", ")}
-                </li>
-                <li>
-                  <span className="text-neon">Peak HP gain:</span> +{featured.hpGain}
-                </li>
-              </ul>
-            )}
-          </div>
-          <div className="neon-edge border border-white/10 bg-black p-6">
-            <span className="pointer-events-none absolute left-0 top-0 h-2 w-2 border-l border-t border-neon" />
-            <span className="pointer-events-none absolute right-0 top-0 h-2 w-2 border-r border-t border-neon" />
-            <span className="pointer-events-none absolute bottom-0 left-0 h-2 w-2 border-b border-l border-neon" />
-            <span className="pointer-events-none absolute bottom-0 right-0 h-2 w-2 border-b border-r border-neon" />
-            {featured?.dynoData && <DynoChart data={featured.dynoData} />}
-          </div>
-        </div>
-
-        {/* Before / After slider */}
-        <div className="mx-auto mt-16 max-w-5xl">
-          <SectionHeader
-            eyebrow="Before / After"
-            title="Drag to Reveal."
-            align="center"
-            className="mb-6 text-center"
-          />
-          {featured?.dynoData && (
-            <BeforeAfterSlider
-              stockHp={Math.max(...featured.dynoData.map((d) => d.stockHp))}
-              tunedHp={Math.max(...featured.dynoData.map((d) => d.tunedHp))}
-            />
-          )}
-        </div>
-      </section>
-
       {/* Tools */}
-      <section className="px-4 py-24 md:px-8 md:py-32">
+      <section className="border-t border-white/5 px-4 py-24 md:px-8 md:py-32">
         <div className="mx-auto max-w-[1440px]">
           <SectionHeader
             eyebrow="The Arsenal"

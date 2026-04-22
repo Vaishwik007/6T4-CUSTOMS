@@ -25,7 +25,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "6T4 CUSTOMS — Built Different. Tuned Brutal.",
   description:
-    "Premium motorcycle tuning, fabrication and performance engineering. Configure your machine. Dyno-precision builds.",
+    "Premium motorcycle tuning, fabrication and performance engineering. Configure your machine. Precision builds.",
   metadataBase: new URL("https://6t4customs.com"),
   openGraph: {
     title: "6T4 CUSTOMS",

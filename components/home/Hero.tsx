@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ChevronRight, Activity } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 export function Hero() {
@@ -129,8 +129,8 @@ export function Hero() {
             data-cursor="cta"
             className="group inline-flex items-center gap-2 border border-white/20 px-6 py-4 text-display text-sm uppercase tracking-[0.2em] text-bone transition-colors hover:border-neon hover:text-neon"
           >
-            <Activity className="h-4 w-4" />
-            See the Dyno
+            Why Us
+            <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </motion.div>
 
@@ -144,7 +144,7 @@ export function Hero() {
           {[
             { v: "1,200+", l: "Bikes Tuned" },
             { v: "+18,400", l: "Total HP Gained" },
-            { v: "12", l: "Years On The Dyno" }
+            { v: "12", l: "Years On The Bench" }
           ].map((s) => (
             <div key={s.l} className="border-r border-white/10 px-4 py-5 last:border-r-0 md:px-6">
               <div className="text-stencil text-2xl text-neon md:text-4xl">{s.v}</div>

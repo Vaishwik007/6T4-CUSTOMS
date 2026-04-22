@@ -82,5 +82,4 @@ export type FeaturedBuild = {
   hpGain: number;
   beforeImage?: string;
   afterImage?: string;
-  dynoData?: { rpm: number; stockHp: number; tunedHp: number }[];
 };
