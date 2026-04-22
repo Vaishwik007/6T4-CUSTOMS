@@ -37,10 +37,10 @@ export function Navbar() {
           : "bg-transparent"
       )}
     >
-      <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-4 md:px-8">
+      <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between px-4 md:h-24 md:px-8">
         <Link href="/" className="group flex items-center" data-cursor="cta" aria-label="6T4 Customs — Home">
-          <BrandLogo src="/images/brand/logo.svg" height={32} fallbackTextSize="base" className="md:hidden" />
-          <BrandLogo src="/images/brand/logo.svg" height={40} fallbackTextSize="base" className="hidden md:block" />
+          <BrandLogo src="/images/brand/logo.svg" height={56} fallbackTextSize="base" className="md:hidden" />
+          <BrandLogo src="/images/brand/logo.svg" height={72} fallbackTextSize="base" className="hidden md:block" />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
