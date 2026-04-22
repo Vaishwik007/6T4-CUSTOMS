@@ -36,7 +36,7 @@ export default function OwnerPage() {
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8 }}
-          className="neon-edge relative aspect-[4/5] overflow-hidden border border-white/10 bg-gradient-to-br from-gunmetal via-carbon to-black"
+          className="neon-edge relative aspect-[832/1266] overflow-hidden border border-white/10 bg-gradient-to-br from-gunmetal via-carbon to-black"
         >
           <span className="pointer-events-none absolute left-0 top-0 z-20 h-3 w-3 border-l-2 border-t-2 border-neon" />
           <span className="pointer-events-none absolute right-0 top-0 z-20 h-3 w-3 border-r-2 border-t-2 border-neon" />
@@ -51,7 +51,7 @@ export default function OwnerPage() {
                 fill
                 priority
                 sizes="(max-width: 768px) 100vw, 720px"
-                className="object-cover"
+                className="object-contain"
                 onError={() => setImgOk(false)}
               />
               {/* subtle duotone + bottom fade so photo blends with the design language */}
