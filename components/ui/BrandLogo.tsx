@@ -12,9 +12,9 @@ type Props = {
 };
 
 /**
- * Renders the master 6T4 Customs logo from /images/brand/logo.svg.
+ * Renders the master 6T4 Customs logo from /images/brand/logo.jpeg.
  * Uses a plain <img> so the aspect ratio doesn't need to be known up front —
- * browser lays it out by the SVG's intrinsic dimensions.
+ * browser lays it out by the file's intrinsic dimensions.
  * If the file is missing or fails to load, falls back to the stylised
  * "6T4 / CUSTOMS" text wordmark so the site never breaks.
  */
@@ -28,7 +28,7 @@ export function BrandLogo({ height, fallbackTextSize = "base", className }: Prop
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src="/images/brand/logo.svg"
+      src="/images/brand/logo.jpeg"
       alt="6T4 Customs"
       onError={() => setOk(false)}
       draggable={false}
