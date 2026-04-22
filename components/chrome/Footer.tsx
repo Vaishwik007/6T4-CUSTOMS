@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Instagram, Youtube, MessageCircle, Facebook } from "lucide-react";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 
 export function Footer() {
   return (
@@ -7,14 +8,7 @@ export function Footer() {
       <div className="grid-bg absolute inset-0 opacity-30" />
       <div className="relative mx-auto grid max-w-[1440px] gap-10 px-4 py-16 md:grid-cols-4 md:px-8">
         <div>
-          <div className="flex items-center gap-2">
-            <div className="relative h-8 w-8 border border-neon">
-              <span className="absolute inset-1 bg-neon shadow-neon-sm" />
-            </div>
-            <span className="text-display text-base font-bold tracking-[0.18em]">
-              6T4<span className="text-neon">/</span>CUSTOMS
-            </span>
-          </div>
+          <BrandLogo height={56} fallbackTextSize="lg" />
           <p className="mt-4 max-w-xs text-sm text-bone/60">
             Built Different. Tuned Brutal. Premium motorcycle tuning, fabrication and performance
             engineering.
