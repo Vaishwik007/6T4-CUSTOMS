@@ -6,19 +6,28 @@ import { cn } from "@/lib/utils/cn";
 type Props = {
   /** Pixel height of the rendered logo. Width is auto (preserves aspect). */
   height: number;
+  /** Asset path override. Defaults to the JPEG master. Pass the SVG path to use vector. */
+  src?: string;
   /** Text-size scale for the fallback wordmark. */
   fallbackTextSize?: "xs" | "sm" | "base" | "lg" | "xl";
   className?: string;
 };
 
+const DEFAULT_SRC = "/images/brand/logo.jpeg";
+
 /**
- * Renders the master 6T4 Customs logo from /images/brand/logo.svg.
- * Uses a plain <img> so the aspect ratio doesn't need to be known up front —
- * browser lays it out by the SVG's intrinsic dimensions.
- * If the file is missing or fails to load, falls back to the stylised
- * "6T4 / CUSTOMS" text wordmark so the site never breaks.
+ * Renders the master 6T4 Customs logo. Defaults to the JPEG but accepts a
+ * per-call `src` override so individual surfaces can opt into a different asset
+ * (e.g. navbar uses SVG for crispness, everywhere else uses JPEG).
+ * Uses a plain <img> so the aspect ratio doesn't need to be known up front.
+ * onError → falls back to the stylised "6T4 / CUSTOMS" text wordmark.
  */
-export function BrandLogo({ height, fallbackTextSize = "base", className }: Props) {
+export function BrandLogo({
+  height,
+  src = DEFAULT_SRC,
+  fallbackTextSize = "base",
+  className
+}: Props) {
   const [ok, setOk] = useState(true);
 
   if (!ok) {
@@ -28,7 +37,7 @@ export function BrandLogo({ height, fallbackTextSize = "base", className }: Prop
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src="/images/brand/logo.svg"
+      src={src}
       alt="6T4 Customs"
       onError={() => setOk(false)}
       draggable={false}

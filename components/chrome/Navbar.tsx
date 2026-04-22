@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ShoppingCart, Menu, X, User } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
 import { cn } from "@/lib/utils/cn";
+import { BrandLogo } from "@/components/ui/BrandLogo";
 
 const NAV = [
   { href: "/", label: "Home" },
@@ -37,14 +38,9 @@ export function Navbar() {
       )}
     >
       <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-4 md:px-8">
-        <Link href="/" className="group flex items-center gap-2" data-cursor="cta">
-          <div className="relative h-8 w-8 border border-neon">
-            <span className="absolute inset-1 bg-neon shadow-neon-sm" />
-            <span className="absolute -right-1 -top-1 h-1 w-1 bg-neon" />
-          </div>
-          <span className="text-display text-base font-bold tracking-[0.18em] text-bone group-hover:text-glow">
-            6T4<span className="text-neon">/</span>CUSTOMS
-          </span>
+        <Link href="/" className="group flex items-center" data-cursor="cta" aria-label="6T4 Customs — Home">
+          <BrandLogo src="/images/brand/logo.svg" height={32} fallbackTextSize="base" className="md:hidden" />
+          <BrandLogo src="/images/brand/logo.svg" height={40} fallbackTextSize="base" className="hidden md:block" />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
