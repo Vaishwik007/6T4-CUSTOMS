@@ -3,7 +3,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useUiStore } from "@/store/useUiStore";
-import { BrandLogo } from "@/components/ui/BrandLogo";
 
 const SESSION_KEY = "6t4-loader-shown";
 const PLAYBACK_RATE = 2; // 2× speed as requested
@@ -148,16 +147,18 @@ export function TachometerLoader() {
             />
           )}
 
-          {/* brand moment — renders the master logo, falls back to wordmark */}
+          {/* brand moment */}
           {(phase === "logo" || phase === "glitch") && (
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className={`relative z-10 flex max-w-[90vw] flex-col items-center text-center ${phase === "glitch" ? "animate-glitch" : ""}`}
+              className={`relative z-10 text-center ${phase === "glitch" ? "animate-glitch" : ""}`}
             >
-              <BrandLogo height={96} fallbackTextSize="xl" />
-              <p className="mt-5 text-stencil text-lg uppercase tracking-[0.4em] text-neon/90 md:text-xl">
+              <h1 className="text-display text-5xl font-black tracking-[0.18em] text-bone md:text-7xl">
+                6T4<span className="text-neon">/</span>CUSTOMS
+              </h1>
+              <p className="mt-3 text-stencil text-lg uppercase tracking-[0.4em] text-neon/90 md:text-xl">
                 Built Different. Tuned Brutal.
               </p>
             </motion.div>

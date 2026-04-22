@@ -22,7 +22,6 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils/cn";
-import { BrandLogo } from "@/components/ui/BrandLogo";
 
 const NAV = [
   { href: "/admin", label: "Overview", Icon: Gauge, exact: true },
@@ -103,8 +102,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             >
               {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </button>
-            <Link href="/admin" className="flex items-center" aria-label="6T4 Customs Admin">
-              <BrandLogo height={28} fallbackTextSize="sm" />
+            <Link href="/admin" className="flex items-center gap-2">
+              <div className="relative h-7 w-7 border border-neon">
+                <span className="absolute inset-1 bg-neon shadow-neon-sm" />
+              </div>
+              <span className="hidden text-display text-sm font-bold tracking-[0.18em] md:inline">
+                6T4<span className="text-neon">/</span>BAY01
+              </span>
             </Link>
             {/* live status pulse */}
             <span className="hidden items-center gap-2 border border-white/10 px-3 py-1 text-[10px] uppercase tracking-[0.3em] text-green-400 md:inline-flex">
