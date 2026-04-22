@@ -44,7 +44,8 @@ export default function WhyUsPage() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="mt-3 text-display text-[44px] font-black uppercase leading-[0.95] md:text-[96px]"
+            className="mt-3 text-display font-black uppercase leading-[0.95]"
+            style={{ fontSize: "clamp(2.25rem, 9vw, 6rem)" }}
           >
             Numbers<span className="text-neon text-glow">,</span>
             <br />

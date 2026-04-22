@@ -55,7 +55,8 @@ export default function OrderPage({ params }: { params: { id: string } }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35, duration: 0.6 }}
-          className="mt-4 text-display text-[44px] font-black uppercase leading-[0.95] text-bone md:text-[88px]"
+          className="mt-4 text-display font-black uppercase leading-[0.95] text-bone"
+          style={{ fontSize: "clamp(2.25rem, 8.5vw, 5.5rem)" }}
         >
           Your Machine
           <br />

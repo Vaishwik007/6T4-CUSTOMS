@@ -37,10 +37,34 @@ export function Navbar() {
           : "bg-transparent"
       )}
     >
-      <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-4 md:px-8">
-        <Link href="/" className="group relative flex items-center" data-cursor="cta" aria-label="6T4 Customs — Home">
-          <BrandLogo src="/images/brand/logo.svg" height={96} fallbackTextSize="lg" className="md:hidden" />
-          <BrandLogo src="/images/brand/logo.svg" height={144} fallbackTextSize="xl" className="hidden md:block" />
+      <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between gap-3 px-3 sm:px-4 md:px-8">
+        <Link
+          href="/"
+          className="group relative flex min-w-0 shrink items-center"
+          data-cursor="cta"
+          aria-label="6T4 Customs — Home"
+        >
+          {/* Very small (<360px) → compact logo so it doesn't push nav controls off-screen */}
+          <BrandLogo
+            src="/images/brand/logo.svg"
+            height={64}
+            fallbackTextSize="base"
+            className="sm:hidden"
+          />
+          {/* 360–767px */}
+          <BrandLogo
+            src="/images/brand/logo.svg"
+            height={96}
+            fallbackTextSize="lg"
+            className="hidden sm:block md:hidden"
+          />
+          {/* 768px+ desktop */}
+          <BrandLogo
+            src="/images/brand/logo.svg"
+            height={144}
+            fallbackTextSize="xl"
+            className="hidden md:block"
+          />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
@@ -56,11 +80,11 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <Link
             href="/account/login"
             data-cursor="cta"
-            className="hidden h-9 w-9 items-center justify-center border border-white/10 text-bone/70 transition-colors hover:border-neon hover:text-neon md:inline-flex"
+            className="hidden h-11 w-11 items-center justify-center border border-white/10 text-bone/70 transition-colors hover:border-neon hover:text-neon md:inline-flex"
             aria-label="Account"
           >
             <User className="h-4 w-4" />
@@ -68,7 +92,7 @@ export function Navbar() {
           <Link
             href="/cart"
             data-cursor="cta"
-            className="relative inline-flex h-9 w-9 items-center justify-center border border-white/10 text-bone/80 transition-colors hover:border-neon hover:text-neon"
+            className="relative inline-flex h-11 w-11 items-center justify-center border border-white/10 text-bone/80 transition-colors hover:border-neon hover:text-neon"
             aria-label={`Cart (${count} items)`}
           >
             <ShoppingCart className="h-4 w-4" />
@@ -81,7 +105,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setOpen((o) => !o)}
-            className="inline-flex h-9 w-9 items-center justify-center border border-white/10 text-bone/80 md:hidden"
+            className="inline-flex h-11 w-11 items-center justify-center border border-white/10 text-bone/80 md:hidden"
             aria-label="Menu"
             data-cursor="cta"
           >

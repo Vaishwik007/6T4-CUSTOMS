@@ -37,7 +37,7 @@ export function BikePreview() {
   useEffect(() => setImgOk(!!modelMeta?.image), [modelMeta?.image]);
 
   return (
-    <div className="sticky top-40 flex min-h-[400px] flex-col">
+    <div className="flex min-h-[400px] flex-col md:sticky md:top-40">
       <p className="mb-2 text-display text-[10px] uppercase tracking-[0.4em] text-neon">
         Live Preview
       </p>

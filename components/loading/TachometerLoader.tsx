@@ -120,12 +120,16 @@ export function TachometerLoader() {
           key="loader"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, transition: { duration: 0.25 } }}
-          className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-black"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black"
+          style={{ width: "100vw", height: "100vh" }}
         >
-          {/* video — always mounted so the ref exists from first render */}
+          {/* video — always mounted so the ref exists from first render.
+              object-contain keeps full frame visible on every aspect ratio
+              (no cropping on mobile/portrait screens). Letterbox shows black
+              which blends with the bg. */}
           <video
             ref={videoRef}
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+            className={`absolute inset-0 m-auto h-auto w-auto max-h-full max-w-full object-contain transition-opacity duration-300 ${
               phase === "video" ? "opacity-100" : "opacity-0"
             }`}
             src="/video/loader.mp4"

@@ -92,7 +92,8 @@ export function Hero() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="text-display text-[44px] font-black uppercase leading-[0.95] tracking-tight text-bone md:text-[96px]"
+          className="text-display font-black uppercase leading-[0.95] tracking-tight text-bone"
+          style={{ fontSize: "clamp(2.25rem, 9vw, 6rem)" }}
         >
           Built <span className="text-neon text-glow">Different.</span>
           <br />
