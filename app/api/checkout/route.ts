@@ -18,7 +18,7 @@ type CheckoutPayload = {
   state: string;
   pin: string;
   delivery: "in-shop" | "delivery";
-  payment: "upi" | "card" | "pay-at-shop";
+  payment: "upi" | "card" | "pay-at-shop" | "razorpay";
   notes?: string;
 };
 
