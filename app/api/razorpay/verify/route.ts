@@ -3,6 +3,9 @@ import { z } from "zod";
 import { createAdminSupabase } from "@/lib/supabase/admin";
 import { getRazorpay } from "@/lib/razorpay/client";
 import { verifyCheckoutSignature } from "@/lib/razorpay/verify";
+import { sendEmail } from "@/lib/email";
+import { orderConfirmation } from "@/lib/email/templates/order-confirmation";
+import { checkAndAlertLowStock } from "@/lib/email/check-low-stock";
 
 export const runtime = "nodejs";
 
@@ -90,11 +93,82 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // 5. Best-effort post-payment side effects: email receipt + low-stock alerts.
+  // Wrapped in try/catch and fire-and-forget so a failure cannot block the response.
+  try {
+    void sendOrderConfirmationAndCheckStock(admin, body.orderId);
+  } catch {
+    /* swallow — email/inventory side effects must not break checkout */
+  }
+
   return NextResponse.json({
     success: true,
     orderId: body.orderId,
     already: result.already ?? false
   });
+}
+
+async function sendOrderConfirmationAndCheckStock(
+  admin: NonNullable<ReturnType<typeof createAdminSupabase>>,
+  orderId: string
+): Promise<void> {
+  try {
+    const { data: order } = await admin
+      .from("orders")
+      .select(
+        "id, total, booking_token, delivery_mode, payment_method, razorpay_payment_id, paid_at, address"
+      )
+      .eq("id", orderId)
+      .maybeSingle();
+    if (!order) return;
+
+    const { data: rawItems } = await admin
+      .from("order_items")
+      .select("part_id, qty, unit_price")
+      .eq("order_id", orderId);
+    const items = rawItems ?? [];
+
+    // Enrich item rows with product names for the receipt.
+    const partIds = Array.from(new Set(items.map((it) => it.part_id))).filter(Boolean);
+    const nameById = new Map<string, string>();
+    if (partIds.length > 0) {
+      const { data: products } = await admin
+        .from("products")
+        .select("id, name")
+        .in("id", partIds);
+      for (const p of products ?? []) {
+        if (p?.id && p?.name) nameById.set(p.id, p.name);
+      }
+    }
+    const itemsForEmail = items.map((it) => ({
+      part_id: it.part_id,
+      qty: it.qty,
+      unit_price: it.unit_price,
+      name: nameById.get(it.part_id) ?? null
+    }));
+
+    const email = (order.address as { email?: string } | null)?.email;
+    if (email) {
+      const tpl = orderConfirmation(order, itemsForEmail);
+      const res = await sendEmail({
+        to: email,
+        subject: tpl.subject,
+        html: tpl.html,
+        text: tpl.text
+      });
+      if (!res.ok) {
+        // eslint-disable-next-line no-console
+        console.warn(`[email] order confirmation failed for ${orderId}: ${res.error}`);
+      }
+    }
+
+    // Re-evaluate low-stock state per line item after the sale.
+    await Promise.all(partIds.map((id) => checkAndAlertLowStock(id)));
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    // eslint-disable-next-line no-console
+    console.warn(`[email] post-payment side effects failed for ${orderId}: ${msg}`);
+  }
 }
 
 async function refundAndMarkFailed(

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo/metadata";
+import { AccountChrome } from "@/components/account/AccountChrome";
 
 export const metadata: Metadata = buildMetadata({
   path: "/account",
@@ -9,5 +10,5 @@ export const metadata: Metadata = buildMetadata({
 });
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <AccountChrome>{children}</AccountChrome>;
 }

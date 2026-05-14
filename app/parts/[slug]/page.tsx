@@ -9,8 +9,44 @@ import { breadcrumbJsonLd, productJsonLd } from "@/lib/seo/jsonld";
 import { absoluteUrl, SITE } from "@/lib/seo/config";
 import { ProductGallery } from "@/components/parts/ProductGallery";
 import { AddToCartBlock } from "@/components/parts/AddToCartBlock";
+import { WishlistButton } from "@/components/parts/WishlistButton";
 import { ProductGrid } from "@/components/parts/ProductGrid";
 import { formatPrice } from "@/lib/utils/formatPrice";
+import { Reviews, type PublishedReview } from "@/components/parts/Reviews";
+import { createAdminSupabase } from "@/lib/supabase/admin";
+
+type ProductReviews = {
+  reviews: PublishedReview[];
+  average: number;
+  count: number;
+};
+
+async function getPublishedReviewsForProduct(productId: string): Promise<ProductReviews> {
+  const empty: ProductReviews = { reviews: [], average: 0, count: 0 };
+  const supa = createAdminSupabase();
+  if (!supa) return empty;
+  const { data, error } = await supa
+    .from("reviews")
+    .select(
+      "id, author_name, bike, rating, title, content, verified_purchase, helpful_count, created_at"
+    )
+    .eq("product_id", productId)
+    .eq("status", "published")
+    .order("created_at", { ascending: false })
+    .limit(50);
+  if (error) {
+    // Table not provisioned yet — fail open, no reviews.
+    return empty;
+  }
+  const list = (data as PublishedReview[] | null) ?? [];
+  if (list.length === 0) return empty;
+  const total = list.reduce((sum, r) => sum + r.rating, 0);
+  return {
+    reviews: list,
+    average: total / list.length,
+    count: list.length
+  };
+}
 
 export const revalidate = 300;
 
@@ -37,7 +73,10 @@ export default async function ProductPage({ params }: { params: { slug: string }
   const p = await getProductBySlug(params.slug);
   if (!p) notFound();
 
-  const related = await getRelatedProducts(p.id, 4);
+  const [related, productReviews] = await Promise.all([
+    getRelatedProducts(p.id, 4),
+    getPublishedReviewsForProduct(p.id)
+  ]);
 
   return (
     <article className="mx-auto max-w-[1440px] px-4 py-24 pt-32 md:px-8 md:py-32">
@@ -58,7 +97,9 @@ export default async function ProductPage({ params }: { params: { slug: string }
           images: p.images,
           sku: p.id.toUpperCase(),
           price: p.price,
-          inStock: p.inStock
+          inStock: p.inStock,
+          reviewCount: productReviews.count > 0 ? productReviews.count : undefined,
+          averageRating: productReviews.count > 0 ? productReviews.average : undefined
         })}
       />
 
@@ -116,6 +157,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
             )}
 
             <AddToCartBlock product={p} />
+            <WishlistButton productId={p.id} />
           </div>
 
           {/* Trust strip */}
@@ -182,6 +224,14 @@ export default async function ProductPage({ params }: { params: { slug: string }
           </ul>
         </section>
       )}
+
+      {/* Reviews */}
+      <Reviews
+        reviews={productReviews.reviews}
+        average={productReviews.average}
+        count={productReviews.count}
+        productName={p.name}
+      />
 
       {/* Related */}
       {related.length > 0 && (
