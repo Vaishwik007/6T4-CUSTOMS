@@ -164,6 +164,28 @@ async function sendOrderConfirmationAndCheckStock(
 
     // Re-evaluate low-stock state per line item after the sale.
     await Promise.all(partIds.map((id) => checkAndAlertLowStock(id)));
+
+    // Schedule a review-request email for ~7 days after payment. Idempotent:
+    // skip the insert if one already exists for this order so retries (or
+    // duplicate webhook fires) don't fan out multiple requests.
+    if (email) {
+      const { data: existing } = await admin
+        .from("notification_queue")
+        .select("id")
+        .eq("template", "review_request")
+        .eq("recipient", email)
+        .contains("payload", { order: { id: orderId } })
+        .limit(1);
+      if (!existing || existing.length === 0) {
+        await admin.from("notification_queue").insert({
+          channel: "email",
+          recipient: email,
+          template: "review_request",
+          payload: { order, items: itemsForEmail },
+          scheduled_for: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+        });
+      }
+    }
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     // eslint-disable-next-line no-console

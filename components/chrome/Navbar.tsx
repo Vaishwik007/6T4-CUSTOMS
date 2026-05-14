@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ShoppingCart, Menu, X, User } from "lucide-react";
+import { ShoppingCart, Menu, X, User, Search } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
 import { cn } from "@/lib/utils/cn";
 import { BrandLogo } from "@/components/ui/BrandLogo";
+import { useSearch } from "@/components/search/SearchProvider";
+import { useCartDrawer } from "@/components/cart/CartDrawerProvider";
 
 const NAV = [
   { href: "/parts", label: "Parts" },
@@ -20,6 +22,8 @@ export function Navbar() {
   const count = items.reduce((n, it) => n + it.qty, 0);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const { openSearch } = useSearch();
+  const { openDrawer } = useCartDrawer();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -27,6 +31,20 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  /**
+   * Cart icon opens the mini-cart drawer by default. Shift+click (or
+   * middle-click via the underlying <Link>) preserves the legacy behaviour
+   * of navigating to the full /cart page — useful for power users and as a
+   * safe fallback if the drawer fails to mount.
+   */
+  const handleCartClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (event.shiftKey || event.metaKey || event.ctrlKey || event.button === 1) {
+      return; // fall through to <Link href="/cart">
+    }
+    event.preventDefault();
+    openDrawer();
+  };
 
   return (
     <header
@@ -78,9 +96,31 @@ export function Navbar() {
               {n.label}
             </Link>
           ))}
+          <button
+            type="button"
+            onClick={openSearch}
+            data-cursor="cta"
+            className="group inline-flex items-center gap-2 border border-white/10 px-3 py-1.5 text-display text-[10px] uppercase tracking-[0.3em] text-bone/60 transition-colors hover:border-neon hover:text-neon"
+            aria-label="Search (Cmd K)"
+          >
+            <Search className="h-3.5 w-3.5" aria-hidden />
+            <span>Search</span>
+            <kbd className="ml-2 hidden border border-white/10 px-1.5 py-0.5 font-mono text-[9px] text-bone/50 group-hover:border-neon/40 group-hover:text-neon/80 lg:inline-block">
+              ⌘K
+            </kbd>
+          </button>
         </nav>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          <button
+            type="button"
+            onClick={openSearch}
+            data-cursor="cta"
+            className="inline-flex h-11 w-11 items-center justify-center border border-white/10 text-bone/80 transition-colors hover:border-neon hover:text-neon md:hidden"
+            aria-label="Open search"
+          >
+            <Search className="h-4 w-4" />
+          </button>
           <Link
             href="/account/login"
             data-cursor="cta"
@@ -91,6 +131,7 @@ export function Navbar() {
           </Link>
           <Link
             href="/cart"
+            onClick={handleCartClick}
             data-cursor="cta"
             className="relative inline-flex h-11 w-11 items-center justify-center border border-white/10 text-bone/80 transition-colors hover:border-neon hover:text-neon"
             aria-label={`Cart (${count} items)`}
