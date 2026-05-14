@@ -4,6 +4,7 @@ import { z } from "zod";
 import { createAdminSupabase } from "@/lib/supabase/admin";
 import { createServerSupabase } from "@/lib/supabase/server";
 import { getRazorpay, getRazorpayPublicKey, isRazorpayConfigured } from "@/lib/razorpay/client";
+import { rateLimit, getClientKey } from "@/lib/security/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -41,6 +42,16 @@ function bookingToken() {
 type StockRow = { id: string; stock: number; price: number; active: boolean };
 
 export async function POST(req: NextRequest) {
+  // Rate limit: 10 orders/min per IP. Generous enough for retries, tight
+  // enough to block scripted abuse.
+  const ip = getClientKey(req.headers);
+  if (!rateLimit(`rzp-create:${ip}`, 10, 60_000)) {
+    return NextResponse.json(
+      { error: "rate_limited", message: "Too many requests. Try again in a minute." },
+      { status: 429, headers: { "Retry-After": "60" } }
+    );
+  }
+
   if (!isRazorpayConfigured()) {
     return NextResponse.json(
       { error: "razorpay_not_configured" },

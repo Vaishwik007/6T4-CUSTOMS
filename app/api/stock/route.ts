@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createAdminSupabase } from "@/lib/supabase/admin";
+import { rateLimit, getClientKey } from "@/lib/security/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,6 +12,15 @@ export const dynamic = "force-dynamic";
  * out-of-stock purchases and display live availability.
  */
 export async function GET(req: NextRequest) {
+  // 120 lookups/min per IP — the cart polls every 15s, so this is ~8x headroom.
+  const ip = getClientKey(req.headers);
+  if (!rateLimit(`stock:${ip}`, 120, 60_000)) {
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": "30" } }
+    );
+  }
+
   const { searchParams } = new URL(req.url);
   const raw = searchParams.get("ids") ?? "";
   const ids = Array.from(
