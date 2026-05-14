@@ -12,9 +12,19 @@ const SOCIALS = [
 
 const COLS: { title: string; links: { label: string; href: string }[] }[] = [
   {
+    title: "Shop",
+    links: [
+      { label: "All Parts", href: "/parts" },
+      { label: "Services", href: "/services" },
+      { label: "Configurator", href: "/configurator" },
+      { label: "Book a Slot", href: "/book" }
+    ]
+  },
+  {
     title: "Garage",
     links: [
-      { label: "Configurator", href: "/configurator" },
+      { label: "About", href: "/about" },
+      { label: "Journal", href: "/journal" },
       { label: "Why Us", href: "/why-us" },
       { label: "The Owner", href: "/owner" }
     ]
@@ -103,7 +113,7 @@ export function Footer() {
         </div>
 
         {/* Link columns */}
-        <div className="md:col-span-8 grid grid-cols-2 gap-8 md:grid-cols-4">
+        <div className="md:col-span-8 grid grid-cols-2 gap-8 md:grid-cols-5">
           {COLS.map((col) => (
             <div key={col.title}>
               <p className="text-display text-xs uppercase tracking-[0.2em] text-neon">

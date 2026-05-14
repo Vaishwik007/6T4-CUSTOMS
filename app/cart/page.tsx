@@ -11,6 +11,7 @@ import { estimateInstallMinutes } from "@/lib/utils/hpEstimator";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { useLiveStock } from "@/lib/hooks/useLiveStock";
 import { cn } from "@/lib/utils/cn";
+import { CrossSellStrip } from "@/components/cart/CrossSellStrip";
 
 export default function CartPage() {
   const items = useCartStore((s) => s.items);
@@ -213,6 +214,8 @@ export default function CartPage() {
           </aside>
         </div>
       )}
+
+      {resolved.length > 0 && <CrossSellStrip />}
     </section>
   );
 }

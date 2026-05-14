@@ -11,8 +11,8 @@ const NAV = [
   { href: "/parts", label: "Parts" },
   { href: "/services", label: "Services" },
   { href: "/configurator", label: "Configurator" },
-  { href: "/book", label: "Book" },
-  { href: "/why-us", label: "Why Us" }
+  { href: "/journal", label: "Journal" },
+  { href: "/about", label: "About" }
 ];
 
 export function Navbar() {

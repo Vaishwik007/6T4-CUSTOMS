@@ -7,6 +7,7 @@ import { Plus, Minus, ShoppingCart, ArrowRight } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
 import { cn } from "@/lib/utils/cn";
 import type { Product } from "@/lib/products/queries";
+import { track } from "@/lib/analytics/events";
 
 export function AddToCartBlock({ product }: { product: Product }) {
   const router = useRouter();
@@ -21,11 +22,15 @@ export function AddToCartBlock({ product }: { product: Product }) {
     if (!product.inStock) return;
     setAdding(true);
     add({ partId: product.id, qty });
+    track({ name: "add_to_cart", product_id: product.id, price: product.price, qty });
     setAdding(false);
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
     if (then === "view-cart") router.push("/cart");
-    if (then === "checkout") router.push("/checkout");
+    if (then === "checkout") {
+      track({ name: "begin_checkout", total: product.price * qty, item_count: qty });
+      router.push("/checkout");
+    }
   };
 
   const disabled = !product.inStock;

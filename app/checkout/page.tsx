@@ -22,6 +22,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { cn } from "@/lib/utils/cn";
 import { useLiveStock } from "@/lib/hooks/useLiveStock";
 import { openRazorpayCheckout } from "@/lib/razorpay/checkout";
+import { track } from "@/lib/analytics/events";
 
 const schema = z.object({
   fullName: z.string().min(2, "Required"),
@@ -140,6 +141,8 @@ export default function CheckoutPage() {
         prefill: { name: string; email: string; contact: string };
       };
 
+      track({ name: "razorpay_open", order_id: data.orderId, total: data.amount });
+
       await openRazorpayCheckout({
         key: data.keyId,
         amount: data.amount * 100,
@@ -177,9 +180,26 @@ export default function CheckoutPage() {
                 : vj.error ?? "Payment verification failed.";
               setError(msg);
               setBusy(false);
+              track({
+                name: "razorpay_failure",
+                order_id: data.orderId,
+                reason: vj.error ?? "verify_failed"
+              });
               router.push(`/thank-you?orderId=${data.orderId}&status=failed`);
               return;
             }
+            track({
+              name: "razorpay_success",
+              order_id: data.orderId,
+              payment_id: resp.razorpay_payment_id,
+              total: data.amount
+            });
+            track({
+              name: "purchase",
+              order_id: data.orderId,
+              total: data.amount,
+              item_count: payload.items.length
+            });
             clear();
             router.push(`/thank-you?orderId=${data.orderId}`);
           } catch (err) {
