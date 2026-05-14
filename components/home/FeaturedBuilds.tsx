@@ -91,7 +91,7 @@ function BuildCard({ build: b, index: i }: { build: FeaturedBuild; index: number
             <div className="absolute inset-0 bg-radial-glow" />
             <div className="absolute inset-0 flex items-center justify-center">
               <svg viewBox="0 0 600 400" className="h-3/4 w-3/4 opacity-60">
-                <g stroke="#ff0000" strokeWidth="2" fill="none">
+                <g stroke="#E10500" strokeWidth="2" fill="none">
                   <circle cx="160" cy="280" r="70" />
                   <circle cx="440" cy="280" r="70" />
                   <path d="M 160 280 L 280 180 L 360 180 L 420 240 L 440 280" />

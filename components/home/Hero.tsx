@@ -53,7 +53,7 @@ export function Hero() {
         >
           <defs>
             <linearGradient id="bikeGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#ff0000" />
+              <stop offset="0%" stopColor="#E10500" />
               <stop offset="100%" stopColor="#3d0000" />
             </linearGradient>
           </defs>

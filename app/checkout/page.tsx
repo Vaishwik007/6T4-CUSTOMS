@@ -148,7 +148,7 @@ export default function CheckoutPage() {
         description: "Parts + Install",
         order_id: data.razorpayOrderId,
         prefill: data.prefill,
-        theme: { color: "#ff0000" },
+        theme: { color: "#E10500" },
         modal: {
           confirm_close: true,
           escape: true,
@@ -402,8 +402,8 @@ export default function CheckoutPage() {
           outline: none;
         }
         .input:focus {
-          border-color: #ff0000;
-          box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.15);
+          border-color: #E10500;
+          box-shadow: 0 0 0 3px rgba(225, 5, 0, 0.15);
         }
         .input::placeholder {
           color: rgba(230, 230, 230, 0.3);

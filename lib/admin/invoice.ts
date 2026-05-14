@@ -20,14 +20,14 @@ export function generateInvoicePdf({
   // Header bar
   doc.setFillColor(0, 0, 0);
   doc.rect(0, 0, w, 70, "F");
-  doc.setFillColor(255, 0, 0);
+  doc.setFillColor(225, 5, 0);
   doc.rect(0, 70, w, 3, "F");
   doc.setTextColor(255, 255, 255);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(22);
   doc.text("6T4 / CUSTOMS", 40, 44);
   doc.setFontSize(9);
-  doc.setTextColor(255, 0, 0);
+  doc.setTextColor(225, 5, 0);
   doc.text("BUILT DIFFERENT · TUNED BRUTAL", 40, 58);
 
   doc.setTextColor(100, 100, 100);
@@ -61,7 +61,7 @@ export function generateInvoicePdf({
   doc.setTextColor(100, 100, 100);
   doc.text("BOOKING TOKEN", w - 200, 110);
   doc.setFontSize(16);
-  doc.setTextColor(255, 0, 0);
+  doc.setTextColor(225, 5, 0);
   doc.setFont("helvetica", "bold");
   doc.text(order.booking_token, w - 200, 128);
 
@@ -97,7 +97,7 @@ export function generateInvoicePdf({
   doc.setTextColor(0, 0, 0);
   doc.text(formatPrice(order.total), w - 40, finalY + 30, { align: "right" });
 
-  doc.setDrawColor(255, 0, 0);
+  doc.setDrawColor(225, 5, 0);
   doc.setLineWidth(1);
   doc.line(w - 200, finalY + 42, w - 40, finalY + 42);
 
@@ -105,7 +105,7 @@ export function generateInvoicePdf({
   doc.setFontSize(14);
   doc.setTextColor(0, 0, 0);
   doc.text("TOTAL", w - 200, finalY + 64);
-  doc.setTextColor(255, 0, 0);
+  doc.setTextColor(225, 5, 0);
   doc.text(formatPrice(order.total), w - 40, finalY + 64, { align: "right" });
 
   // Footer

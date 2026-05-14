@@ -7,6 +7,7 @@ import { Footer } from "./Footer";
 import { GrainOverlay } from "./GrainOverlay";
 import { CursorGlow } from "./CursorGlow";
 import { TachometerLoader } from "@/components/loading/TachometerLoader";
+import { WhatsAppFab } from "@/components/trust/WhatsAppFab";
 
 /**
  * Chooses the correct chrome stack based on route.
@@ -32,10 +33,11 @@ export function ChromeProvider({ children }: { children: React.ReactNode }) {
     <LenisProvider>
       <TachometerLoader />
       <Navbar />
-      <main className="relative">{children}</main>
+      <main id="main" className="relative">{children}</main>
       <Footer />
       <GrainOverlay />
       <CursorGlow />
+      <WhatsAppFab />
     </LenisProvider>
   );
 }

@@ -17,7 +17,7 @@ import { PARTS, PART_CATEGORIES } from "@/lib/data/parts";
 import { MODELS } from "@/lib/data/models";
 import { BRANDS } from "@/lib/data/brands";
 
-const COLORS = ["#ff0000", "#d40000", "#a00000", "#6e0000", "#3d0000", "#ff5050"];
+const COLORS = ["#E10500", "#d40000", "#a00000", "#6e0000", "#3d0000", "#ff5050"];
 
 export default function AdminMetrics() {
   const byCat = PART_CATEGORIES.map((c) => ({
@@ -53,11 +53,11 @@ export default function AdminMetrics() {
               <Tooltip
                 contentStyle={{
                   background: "#000",
-                  border: "1px solid rgba(255,0,0,0.5)"
+                  border: "1px solid rgba(225,5,0,0.5)"
                 }}
-                cursor={{ fill: "rgba(255,0,0,0.08)" }}
+                cursor={{ fill: "rgba(225,5,0,0.08)" }}
               />
-              <Bar dataKey="count" fill="#ff0000" />
+              <Bar dataKey="count" fill="#E10500" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -83,7 +83,7 @@ export default function AdminMetrics() {
                 ))}
               </Pie>
               <Tooltip
-                contentStyle={{ background: "#000", border: "1px solid rgba(255,0,0,0.5)" }}
+                contentStyle={{ background: "#000", border: "1px solid rgba(225,5,0,0.5)" }}
               />
               <Legend wrapperStyle={{ fontSize: 11, color: "#888" }} />
             </PieChart>

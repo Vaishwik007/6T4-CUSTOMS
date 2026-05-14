@@ -15,11 +15,11 @@ export async function sendOtpEmail({ to, code }: { to: string; code: string }) {
   const subject = "6T4 Customs — verification code";
   const html = `
     <div style="font-family:ui-sans-serif,system-ui,Inter,sans-serif;background:#000;color:#eee;padding:40px;max-width:540px;margin:auto;border:1px solid #2a0000">
-      <h1 style="font-family:Orbitron,sans-serif;letter-spacing:.15em;margin:0 0 12px;text-transform:uppercase">6T4<span style="color:#ff0000">/</span>CUSTOMS</h1>
-      <p style="color:#ff0000;letter-spacing:.4em;font-size:10px;text-transform:uppercase;margin:0 0 30px">Access Code</p>
+      <h1 style="font-family:Orbitron,sans-serif;letter-spacing:.15em;margin:0 0 12px;text-transform:uppercase">6T4<span style="color:#E10500">/</span>CUSTOMS</h1>
+      <p style="color:#E10500;letter-spacing:.4em;font-size:10px;text-transform:uppercase;margin:0 0 30px">Access Code</p>
       <p style="color:#bbb;margin:0 0 20px">Your one-time code (valid for 5 minutes):</p>
-      <div style="background:#0a0a0a;border:1px solid rgba(255,0,0,0.4);padding:22px;text-align:center;margin:10px 0 24px">
-        <div style="font-family:'Courier New',monospace;letter-spacing:.7em;font-size:36px;color:#ff0000;font-weight:700">${code}</div>
+      <div style="background:#0a0a0a;border:1px solid rgba(225,5,0,0.4);padding:22px;text-align:center;margin:10px 0 24px">
+        <div style="font-family:'Courier New',monospace;letter-spacing:.7em;font-size:36px;color:#E10500;font-weight:700">${code}</div>
       </div>
       <p style="color:#666;font-size:12px;margin:0">If you didn't request this, ignore this email. No action needed.</p>
     </div>`;
