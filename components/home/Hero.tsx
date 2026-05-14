@@ -114,23 +114,31 @@ export function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-10 flex flex-wrap items-center gap-4"
+          className="mt-10 flex flex-wrap items-center gap-3"
         >
           <Link
             href="/configurator"
             data-cursor="cta"
             className="group relative inline-flex items-center gap-3 bg-neon px-8 py-4 text-display text-sm font-bold uppercase tracking-[0.2em] text-black transition-all hover:bg-white hover:shadow-neon-lg"
           >
-            Build Your Machine
+            Configure My Build
             <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             <span className="pointer-events-none absolute -right-2 -top-2 h-2 w-2 bg-neon" />
           </Link>
           <Link
-            href="/why-us"
+            href="/parts"
             data-cursor="cta"
             className="group inline-flex items-center gap-2 border border-white/20 px-6 py-4 text-display text-sm uppercase tracking-[0.2em] text-bone transition-colors hover:border-neon hover:text-neon"
           >
-            Why Us
+            Browse Parts
+            <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+          <Link
+            href="/services"
+            data-cursor="cta"
+            className="group inline-flex items-center gap-2 border border-white/20 px-6 py-4 text-display text-sm uppercase tracking-[0.2em] text-bone transition-colors hover:border-neon hover:text-neon"
+          >
+            Book a Service
             <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </motion.div>

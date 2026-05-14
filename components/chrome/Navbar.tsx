@@ -8,11 +8,11 @@ import { cn } from "@/lib/utils/cn";
 import { BrandLogo } from "@/components/ui/BrandLogo";
 
 const NAV = [
-  { href: "/", label: "Home" },
+  { href: "/parts", label: "Parts" },
+  { href: "/services", label: "Services" },
   { href: "/configurator", label: "Configurator" },
-  { href: "/why-us", label: "Why Us" },
-  { href: "/owner", label: "Owner" },
-  { href: "/account", label: "Account" }
+  { href: "/book", label: "Book" },
+  { href: "/why-us", label: "Why Us" }
 ];
 
 export function Navbar() {
