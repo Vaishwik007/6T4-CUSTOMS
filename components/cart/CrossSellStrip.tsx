@@ -61,10 +61,10 @@ export function CrossSellStrip() {
           <li key={p.id} className="neon-edge flex gap-3 border border-white/5 bg-carbon p-3">
             <Link
               href={`/parts/${p.slug}`}
-              className="relative aspect-square w-20 shrink-0 overflow-hidden border border-white/10 bg-black/60"
+              className="relative aspect-square w-20 shrink-0 overflow-hidden border border-white/10 bg-white"
             >
               {p.images[0] ? (
-                <Image src={p.images[0]} alt={p.name} fill sizes="80px" className="object-cover" />
+                <Image src={p.images[0]} alt={p.name} fill sizes="80px" className="object-contain p-1" unoptimized={p.images[0].startsWith("/api/")} />
               ) : (
                 <span className="grid h-full place-items-center text-[10px] uppercase tracking-[0.2em] text-neon/40">
                   {p.category.slice(0, 3)}

@@ -166,14 +166,15 @@ export function MiniCartDrawer({ open, onClose }: MiniCartDrawerProps) {
                           isOut || exceedsStock ? "border-red-500/40" : "border-white/5"
                         )}
                       >
-                        <div className="relative h-16 w-16 shrink-0 overflow-hidden border border-white/10 bg-black">
+                        <div className="relative h-16 w-16 shrink-0 overflow-hidden border border-white/10 bg-white">
                           {image ? (
                             <Image
                               src={image}
                               alt=""
                               fill
                               sizes="64px"
-                              className="object-cover"
+                              className="object-contain p-0.5"
+                              unoptimized={image.startsWith("/api/")}
                             />
                           ) : (
                             <div className="grid h-full w-full place-items-center text-[10px] uppercase tracking-[0.2em] text-bone/30">

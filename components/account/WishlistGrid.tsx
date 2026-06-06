@@ -103,7 +103,7 @@ function Card({
       <Link
         href={`/parts/${p.slug}`}
         data-cursor="cta"
-        className="relative aspect-[5/4] w-full overflow-hidden bg-black/60"
+        className="relative aspect-[5/4] w-full overflow-hidden bg-white"
       >
         {primary ? (
           <Image
@@ -111,7 +111,8 @@ function Card({
             alt={p.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className="object-contain p-2 transition-transform duration-500 group-hover:scale-105"
+            unoptimized={primary.startsWith("/api/")}
           />
         ) : (
           <div className="grid h-full place-items-center">

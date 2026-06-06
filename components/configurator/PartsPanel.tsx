@@ -253,19 +253,21 @@ export function PartsPanel() {
 }
 
 function PartThumb({ part }: { part: Part }) {
-  const [ok, setOk] = useState(!!part.images?.[0]);
+  const [ok, setOk] = useState(true);
   const primary = part.images?.[0];
   const Icon = CATEGORY_ICON[part.category];
+  const isApiImage = primary?.startsWith("/api/");
 
   return (
-    <div className="relative grid h-16 w-16 shrink-0 place-items-center overflow-hidden border border-white/10 bg-black/60">
+    <div className="relative grid h-16 w-16 shrink-0 place-items-center overflow-hidden border border-white/10 bg-white">
       {primary && ok ? (
         <Image
           src={primary}
           alt={part.name}
           fill
           sizes="64px"
-          className="object-cover"
+          className="object-contain p-0.5"
+          unoptimized={isApiImage}
           onError={() => setOk(false)}
         />
       ) : (
