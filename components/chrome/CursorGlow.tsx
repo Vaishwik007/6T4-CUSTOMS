@@ -1,22 +1,29 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useMediaQuery } from "@/lib/hooks/useMediaQuery";
 
 /**
  * Custom red cursor glow.
  * - Two stacked elements: solid dot + radial halo, both pointer-events:none.
  * - Position via rAF lerp for inertia.
- * - Self-disables on touch / coarse pointer / reduced motion.
  * - Hovering [data-cursor="cta"] grows + brightens the halo.
+ *
+ * Hard-gated to desktop-only with fine pointer + non-reduced motion:
+ *   useMediaQuery short-circuits early so we don't even mount the DOM
+ *   elements on touch/coarse-pointer devices. Saves layout cost and
+ *   avoids accidental hover state on mobile browsers.
  */
 export function CursorGlow() {
   const dotRef = useRef<HTMLDivElement>(null);
   const haloRef = useRef<HTMLDivElement>(null);
+  const fine = useMediaQuery("(hover: hover) and (pointer: fine)");
 
   useEffect(() => {
-    const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (!fine) return;
+
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!fine || reduce) return;
+    if (reduce) return;
 
     document.body.classList.add("cursor-active");
 
@@ -58,7 +65,9 @@ export function CursorGlow() {
       window.removeEventListener("pointermove", onMove);
       document.body.classList.remove("cursor-active");
     };
-  }, []);
+  }, [fine]);
+
+  if (!fine) return null;
 
   return (
     <>
@@ -68,7 +77,7 @@ export function CursorGlow() {
         className="pointer-events-none fixed left-0 top-0 z-[9998] h-[220px] w-[220px] rounded-full"
         style={{
           background:
-            "radial-gradient(circle, rgba(255,0,0,0.35) 0%, rgba(255,0,0,0.12) 30%, rgba(255,0,0,0) 70%)",
+            "radial-gradient(circle, rgba(225,5,0,0.35) 0%, rgba(225,5,0,0.12) 30%, rgba(225,5,0,0) 70%)",
           mixBlendMode: "screen",
           willChange: "transform"
         }}

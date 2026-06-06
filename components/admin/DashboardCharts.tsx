@@ -16,13 +16,13 @@ import {
   Legend
 } from "recharts";
 
-const COLORS = ["#ff0000", "#ff5050", "#d40000", "#a00000", "#6e0000", "#ff8080"];
+const COLORS = ["#E10500", "#ff5050", "#d40000", "#a00000", "#6e0000", "#ff8080"];
 
 const gridStroke = "rgba(255,255,255,0.06)";
 const axisTick = { fill: "#888", fontSize: 11 };
 const tooltipStyle = {
   background: "#000",
-  border: "1px solid rgba(255,0,0,0.4)",
+  border: "1px solid rgba(225,5,0,0.4)",
   fontSize: 12
 };
 
@@ -38,9 +38,9 @@ export function RevenueChart({ data }: { data: { month: string; revenue: number;
           <Line
             type="monotone"
             dataKey="revenue"
-            stroke="#ff0000"
+            stroke="#E10500"
             strokeWidth={2.5}
-            dot={{ r: 3, fill: "#ff0000" }}
+            dot={{ r: 3, fill: "#E10500" }}
             activeDot={{ r: 5 }}
           />
         </LineChart>
@@ -64,8 +64,8 @@ export function TopProductsChart({ data }: { data: { name: string; revenue: numb
             axisLine={{ stroke: gridStroke }}
             tickLine={false}
           />
-          <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "rgba(255,0,0,0.06)" }} />
-          <Bar dataKey="revenue" fill="#ff0000" />
+          <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "rgba(225,5,0,0.06)" }} />
+          <Bar dataKey="revenue" fill="#E10500" />
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -112,7 +112,7 @@ export function MarginChart({ data }: { data: { category: string; revenue: numbe
           <Tooltip contentStyle={tooltipStyle} />
           <Legend wrapperStyle={{ fontSize: 11, color: "#888" }} />
           <Bar dataKey="revenue" fill="#6e0000" name="Revenue" />
-          <Bar dataKey="profit" fill="#ff0000" name="Profit" />
+          <Bar dataKey="profit" fill="#E10500" name="Profit" />
         </BarChart>
       </ResponsiveContainer>
     </div>

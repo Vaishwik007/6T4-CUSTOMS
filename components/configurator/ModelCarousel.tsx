@@ -166,7 +166,7 @@ function BikeGlyph({ category }: { category: string }) {
       viewBox="0 0 600 400"
       style={{ transform: `rotate(${rot}deg)` }}
     >
-      <g stroke="#ff0000" strokeWidth="2" fill="none">
+      <g stroke="#E10500" strokeWidth="2" fill="none">
         <circle cx="160" cy="280" r="70" />
         <circle cx="440" cy="280" r="70" />
         <path d="M 160 280 L 290 180 L 360 180 L 420 240 L 440 280" />

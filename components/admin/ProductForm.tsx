@@ -312,7 +312,7 @@ export function ProductForm({
           font-size: 14px;
         }
         .input:focus {
-          border-color: #ff0000;
+          border-color: #E10500;
         }
         .input[disabled] {
           cursor: not-allowed;

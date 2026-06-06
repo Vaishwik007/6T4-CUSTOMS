@@ -7,6 +7,12 @@ import type { DbOrder, DbOrderItem } from "@/lib/supabase/types";
 import { formatPrice } from "@/lib/utils/formatPrice";
 import { cn } from "@/lib/utils/cn";
 import { generateInvoicePdf } from "@/lib/admin/invoice";
+import { RefundButton } from "@/components/admin/RefundButton";
+
+type OrderRefundable = DbOrder & {
+  payment_status?: string | null;
+  razorpay_payment_id?: string | null;
+};
 
 const STATUSES: DbOrder["status"][] = [
   "pending",
@@ -125,8 +131,11 @@ export default function AdminOrdersPage() {
             {orders && filtered.length === 0 && (
               <tr><td colSpan={8} className="px-4 py-12 text-center text-bone/40">No orders match.</td></tr>
             )}
-            {filtered.map((o) => {
+            {filtered.map((raw) => {
+              const o = raw as OrderRefundable;
               const waHref = `https://wa.me/${(o.address?.phone ?? "").replace(/[^\d]/g, "")}?text=${encodeURIComponent("Hi " + (o.address?.fullName ?? "") + " — 6T4 Customs update on " + o.booking_token)}`;
+              const refundable =
+                o.payment_status === "paid" && !!o.razorpay_payment_id;
               return (
                 <motion.tr
                   key={o.id}
@@ -184,6 +193,9 @@ export default function AdminOrdersPage() {
                         >
                           <MessageCircle className="h-3.5 w-3.5" />
                         </a>
+                      )}
+                      {refundable && (
+                        <RefundButton orderId={o.id} amount={o.total} />
                       )}
                     </div>
                   </td>
