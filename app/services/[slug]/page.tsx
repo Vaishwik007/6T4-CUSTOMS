@@ -13,8 +13,9 @@ export function generateStaticParams() {
   return SERVICES.map((s) => ({ slug: s.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const s = getServiceBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const s = getServiceBySlug(slug);
   if (!s) return buildMetadata({ title: "Service Not Found", noIndex: true });
   return buildMetadata({
     path: `/services/${s.slug}`,
@@ -26,8 +27,9 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   });
 }
 
-export default function ServicePage({ params }: { params: { slug: string } }) {
-  const s = getServiceBySlug(params.slug);
+export default async function ServicePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const s = getServiceBySlug(slug);
   if (!s) notFound();
 
   const hours = Math.round((s.durationMinutes / 60) * 10) / 10;

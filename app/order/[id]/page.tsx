@@ -3,23 +3,25 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { CheckCircle2, MessageCircle, Copy, Check, Home as HomeIcon, Phone } from "lucide-react";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
 
 interface OrderPageProps {
-  params: { id: string };
-  searchParams: { token?: string };
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ token?: string }>;
 }
 
 export default function OrderPage({ params, searchParams }: OrderPageProps) {
-  const [token, setToken] = useState<string>(searchParams.token ?? "");
+  const { id } = use(params);
+  const { token: searchToken } = use(searchParams);
+  const [token, setToken] = useState<string>(searchToken ?? "");
   const [copied, setCopied] = useState(false);
-  const [loading, setLoading] = useState(!searchParams.token);
+  const [loading, setLoading] = useState(!searchToken);
 
   useEffect(() => {
     // If a real token was passed via query param, use it directly
-    if (searchParams.token) {
-      setToken(searchParams.token);
+    if (searchToken) {
+      setToken(searchToken);
       setLoading(false);
       return;
     }
@@ -32,7 +34,7 @@ export default function OrderPage({ params, searchParams }: OrderPageProps) {
           const { data } = await supa
             .from("orders")
             .select("booking_token")
-            .eq("id", params.id)
+            .eq("id", id)
             .single();
           if (data?.booking_token) {
             setToken(data.booking_token);
@@ -45,18 +47,18 @@ export default function OrderPage({ params, searchParams }: OrderPageProps) {
       }
 
       // Last resort: derive a stable token from the UUID
-      const hash = params.id.replace(/[^a-z0-9]/gi, "").toUpperCase().slice(0, 6);
+      const hash = id.replace(/[^a-z0-9]/gi, "").toUpperCase().slice(0, 6);
       setToken(`6T4-${hash || "LOCKED"}`);
       setLoading(false);
     };
 
     fetchToken();
-  }, [params.id, searchParams.token]);
+  }, [id, searchToken]);
 
   const waNumber = process.env.NEXT_PUBLIC_OWNER_WHATSAPP ?? "+919999999999";
   const ownerPhone = process.env.NEXT_PUBLIC_OWNER_PHONE ?? waNumber;
   const waText = encodeURIComponent(
-    `Hi 6T4 Customs — my order token is ${token} (order id: ${params.id}). Can you confirm?`
+    `Hi 6T4 Customs — my order token is ${token} (order id: ${id}). Can you confirm?`
   );
   const waHref = `https://wa.me/${waNumber.replace(/[^\d]/g, "")}?text=${waText}`;
   const hasWhatsapp = waNumber !== "+919999999999";
@@ -132,7 +134,7 @@ export default function OrderPage({ params, searchParams }: OrderPageProps) {
             </button>
           </div>
           <p className="mt-3 border-t border-white/10 pt-3 text-left text-[10px] uppercase tracking-[0.3em] text-bone/40">
-            Order id · {params.id}
+            Order id · {id}
           </p>
         </motion.div>
 

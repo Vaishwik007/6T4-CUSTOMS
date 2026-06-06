@@ -17,10 +17,13 @@ const Body = z.object({
  * and `moderated_by` to the current admin. Revalidates the admin reviews page
  * and the product PDP so newly published reviews show up immediately.
  */
+type RouteContext = { params: Promise<{ id: string }> };
+
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: RouteContext
 ) {
+  const { id } = await context.params;
   const me = await getCurrentAdmin();
   if (!me) return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
 
@@ -42,7 +45,7 @@ export async function POST(
   const { data: existing, error: fetchErr } = await supa
     .from("reviews")
     .select("id, product_id")
-    .eq("id", params.id)
+    .eq("id", id)
     .maybeSingle();
 
   if (fetchErr) {
@@ -66,7 +69,7 @@ export async function POST(
       moderated_at: new Date().toISOString(),
       moderated_by: me.sub
     })
-    .eq("id", params.id);
+    .eq("id", id);
 
   if (updateErr) {
     return NextResponse.json(
@@ -80,7 +83,7 @@ export async function POST(
     admin_username: me.username,
     action: "review_moderated",
     target_type: "review",
-    target_id: params.id,
+    target_id: id,
     metadata: { action: parsed.data.action, status: nextStatus },
     ip: getClientIp(req.headers)
   });

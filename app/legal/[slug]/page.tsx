@@ -11,8 +11,9 @@ export function generateStaticParams() {
   return LEGAL_SLUGS.map((slug) => ({ slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const doc = LEGAL_DOCS[params.slug];
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const doc = LEGAL_DOCS[slug];
   if (!doc) return buildMetadata({ title: "Not Found", noIndex: true });
   return buildMetadata({
     path: `/legal/${doc.slug}`,
@@ -21,8 +22,9 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   });
 }
 
-export default function LegalPage({ params }: { params: { slug: string } }) {
-  const doc = LEGAL_DOCS[params.slug];
+export default async function LegalPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const doc = LEGAL_DOCS[slug];
   if (!doc) notFound();
 
   return (

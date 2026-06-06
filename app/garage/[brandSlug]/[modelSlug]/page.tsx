@@ -29,9 +29,10 @@ export function generateStaticParams(): Params[] {
   return MODELS.map((m) => ({ brandSlug: m.brand, modelSlug: m.slug }));
 }
 
-export function generateMetadata({ params }: { params: Params }): Metadata {
-  const brand = BRANDS_BY_SLUG[params.brandSlug];
-  const model = brand ? getModel(brand.slug, params.modelSlug) : undefined;
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+  const { brandSlug, modelSlug } = await params;
+  const brand = BRANDS_BY_SLUG[brandSlug];
+  const model = brand ? getModel(brand.slug, modelSlug) : undefined;
   if (!brand || !model) return buildMetadata({ title: "Bike Not Found", noIndex: true });
 
   const title = `${brand.name} ${model.name} Performance Parts & Tuning`;
@@ -57,9 +58,10 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
   });
 }
 
-export default async function BikeModelPage({ params }: { params: Params }) {
-  const brand = BRANDS_BY_SLUG[params.brandSlug];
-  const model = brand ? getModel(brand.slug, params.modelSlug) : undefined;
+export default async function BikeModelPage({ params }: { params: Promise<Params> }) {
+  const { brandSlug, modelSlug } = await params;
+  const brand = BRANDS_BY_SLUG[brandSlug];
+  const model = brand ? getModel(brand.slug, modelSlug) : undefined;
   if (!brand || !model) notFound();
 
   const compatibleParts = getCompatibleParts(brand.slug, model.slug);

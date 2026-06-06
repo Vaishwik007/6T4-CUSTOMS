@@ -15,12 +15,13 @@ export function generateStaticParams() {
   return BRANDS.map((b) => ({ brandSlug: b.slug }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params
 }: {
-  params: { brandSlug: string };
-}): Metadata {
-  const brand = BRANDS_BY_SLUG[params.brandSlug];
+  params: Promise<{ brandSlug: string }>;
+}): Promise<Metadata> {
+  const { brandSlug } = await params;
+  const brand = BRANDS_BY_SLUG[brandSlug];
   if (!brand) return buildMetadata({ title: "Brand Not Found", noIndex: true });
 
   const models = MODELS_BY_BRAND[brand.slug] ?? [];
@@ -44,8 +45,9 @@ export function generateMetadata({
   });
 }
 
-export default function BrandPage({ params }: { params: { brandSlug: string } }) {
-  const brand = BRANDS_BY_SLUG[params.brandSlug];
+export default async function BrandPage({ params }: { params: Promise<{ brandSlug: string }> }) {
+  const { brandSlug } = await params;
+  const brand = BRANDS_BY_SLUG[brandSlug];
   if (!brand) notFound();
 
   const models = [...(MODELS_BY_BRAND[brand.slug] ?? [])].sort((a, b) =>

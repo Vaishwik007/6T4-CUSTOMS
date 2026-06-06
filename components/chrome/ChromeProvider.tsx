@@ -8,6 +8,8 @@ import { GrainOverlay } from "./GrainOverlay";
 import { CursorGlow } from "./CursorGlow";
 import { FloatingContact } from "./FloatingContact";
 import { TachometerLoader } from "@/components/loading/TachometerLoader";
+import { SearchProvider } from "@/components/search/SearchProvider";
+import { CartDrawerProvider } from "@/components/cart/CartDrawerProvider";
 
 /**
  * Chooses the correct chrome stack based on route.
@@ -30,14 +32,18 @@ export function ChromeProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <LenisProvider>
-      <TachometerLoader />
-      <Navbar />
-      <main className="relative">{children}</main>
-      <Footer />
-      <FloatingContact />
-      <GrainOverlay />
-      <CursorGlow />
-    </LenisProvider>
+    <SearchProvider>
+      <CartDrawerProvider>
+        <LenisProvider>
+          <TachometerLoader />
+          <Navbar />
+          <main className="relative">{children}</main>
+          <Footer />
+          <FloatingContact />
+          <GrainOverlay />
+          <CursorGlow />
+        </LenisProvider>
+      </CartDrawerProvider>
+    </SearchProvider>
   );
 }

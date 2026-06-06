@@ -55,8 +55,9 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const p = await getProductBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const p = await getProductBySlug(slug);
   if (!p) return buildMetadata({ title: "Part Not Found", noIndex: true });
   return buildMetadata({
     path: `/parts/${p.slug}`,
@@ -69,8 +70,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   });
 }
 
-export default async function ProductPage({ params }: { params: { slug: string } }) {
-  const p = await getProductBySlug(params.slug);
+export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const p = await getProductBySlug(slug);
   if (!p) notFound();
 
   const [related, productReviews] = await Promise.all([
