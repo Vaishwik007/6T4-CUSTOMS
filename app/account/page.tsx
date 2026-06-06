@@ -18,10 +18,11 @@ type ViewState =
   | { kind: "loading" }
   | { kind: "anonymous" }
   | { kind: "unconfigured" }
-  | { kind: "authed"; email: string; builds: DbBuild[]; orders: DbOrder[] };
+  | { kind: "authed"; email: string; userId: string; builds: DbBuild[]; orders: DbOrder[] };
 
 export default function AccountPage() {
   const [view, setView] = useState<ViewState>({ kind: "loading" });
+  const [buildError, setBuildError] = useState<string | null>(null);
   const build = useBuildStore();
 
   useEffect(() => {
@@ -51,6 +52,7 @@ export default function AccountPage() {
       setView({
         kind: "authed",
         email: data.user.email ?? "",
+        userId: data.user.id,
         builds: (builds ?? []) as DbBuild[],
         orders: (orders ?? []) as DbOrder[]
       });
@@ -69,6 +71,7 @@ export default function AccountPage() {
     const { data: inserted, error } = await supa
       .from("builds")
       .insert({
+        user_id: view.userId,
         brand: build.brand,
         model: build.model,
         year: build.year,
@@ -80,9 +83,10 @@ export default function AccountPage() {
       .select()
       .single();
     if (error) {
-      alert(error.message);
+      setBuildError(error.message);
       return;
     }
+    setBuildError(null);
     setView((v) =>
       v.kind === "authed"
         ? { ...v, builds: [inserted as DbBuild, ...v.builds] }
@@ -151,23 +155,28 @@ export default function AccountPage() {
 
           {/* Save current build */}
           {build.brand && build.model && build.year && (
-            <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border border-neon/30 bg-neon-900/10 p-4">
-              <p className="text-sm text-bone/80">
-                You have a configuration in progress:{" "}
-                <span className="text-neon">
-                  {BRANDS_BY_SLUG[build.brand]?.name} {getModel(build.brand, build.model)?.name} ·{" "}
-                  {build.year}
-                </span>{" "}
-                ({build.selectedParts.length} mods)
-              </p>
-              <button
-                type="button"
-                onClick={saveCurrentBuild}
-                data-cursor="cta"
-                className="inline-flex items-center gap-2 bg-neon px-4 py-2 text-[11px] uppercase tracking-[0.2em] font-bold text-black hover:bg-white"
-              >
-                <Save className="h-3 w-3" /> Save Build
-              </button>
+            <div className="mt-8 border border-neon/30 bg-neon-900/10 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <p className="text-sm text-bone/80">
+                  You have a configuration in progress:{" "}
+                  <span className="text-neon">
+                    {BRANDS_BY_SLUG[build.brand]?.name} {getModel(build.brand, build.model)?.name} ·{" "}
+                    {build.year}
+                  </span>{" "}
+                  ({build.selectedParts.length} mods)
+                </p>
+                <button
+                  type="button"
+                  onClick={saveCurrentBuild}
+                  data-cursor="cta"
+                  className="inline-flex items-center gap-2 bg-neon px-4 py-2 text-[11px] uppercase tracking-[0.2em] font-bold text-black hover:bg-white"
+                >
+                  <Save className="h-3 w-3" /> Save Build
+                </button>
+              </div>
+              {buildError && (
+                <p className="mt-2 text-xs text-neon">{buildError}</p>
+              )}
             </div>
           )}
 

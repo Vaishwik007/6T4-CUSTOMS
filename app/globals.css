@@ -16,9 +16,17 @@
 
 html,
 body {
-  background: var(--bg);
   color: var(--fg);
   min-height: 100%;
+}
+/* html owns the base background so fixed FX layers at z-index:-1 remain visible
+   beneath transparent body content. Previously body also had bg:var(--bg),
+   which would have covered any negative-z decoration. */
+html {
+  background: var(--bg);
+}
+body {
+  background: transparent;
 }
 
 html {
@@ -48,7 +56,11 @@ body {
   font-family: var(--font-inter), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+/* Subtle radial warmth moved to html so it sits under the fx layer, not over it. */
+html {
   background-image: radial-gradient(ellipse at top, rgba(255, 0, 0, 0.05) 0%, transparent 60%);
+  background-color: var(--bg);
 }
 
 /* hide native cursor on devices with hover */
@@ -76,6 +88,27 @@ body {
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(#5a0000, #ff0000);
   border-radius: 0;
+}
+
+/* ─── Focus visible — WCAG 2.4.7 / 2.4.11 ─── */
+:focus-visible {
+  outline: 2px solid #ff0000;
+  outline-offset: 3px;
+}
+/* Remove focus ring when using mouse (cursor-active class set by CursorGlow) */
+body.cursor-active :focus:not(:focus-visible) {
+  outline: none;
+}
+/* Ensure interactive elements inside the cursor-none zone still show focus-visible */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #ff0000;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(255, 0, 0, 0.2);
 }
 
 /* ----------- utility classes ----------- */
@@ -224,5 +257,315 @@ body {
 @media (hover: hover) and (pointer: fine) {
   .card-lift:hover {
     transform: translate3d(0, -4px, 0);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   CINEMATIC BACKGROUND FX — page-specific ambient layers
+   All animations animate transform/opacity only (compositor-only).
+   Respects prefers-reduced-motion. pointer-events: none everywhere.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.fx-root {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* z:-1 keeps the layer beneath all auto-positioned page content while
+     remaining visible because body is transparent and html owns the base bg. */
+  z-index: -1;
+  /* isolate compositing so parents don't repaint */
+  isolation: isolate;
+  contain: strict;
+}
+/* Wrapper for page content above the FX layer. Pair with <BackgroundFX /> */
+.fx-above {
+  position: relative;
+  z-index: 10;
+}
+.fx-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* — vignette + grain overlays (used on multiple variants) — */
+.fx-vignette {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 40%,
+    rgba(0, 0, 0, 0.55) 90%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+  mix-blend-mode: multiply;
+}
+.fx-grain {
+  background-image:
+    repeating-conic-gradient(
+      rgba(255, 255, 255, 0.012) 0deg 5deg,
+      transparent 5deg 10deg
+    );
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+}
+
+/* ─── IGNITION (home) ─── */
+@keyframes fx-streak {
+  0%   { transform: translate3d(-30%, 0, 0); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translate3d(130%, 0, 0); opacity: 0; }
+}
+.fx-streak {
+  position: absolute;
+  left: 0;
+  height: 1px;
+  width: 60%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 0, 0, 0.0) 10%,
+    rgba(255, 0, 0, 0.8) 50%,
+    rgba(255, 255, 255, 0.95) 55%,
+    rgba(255, 0, 0, 0.8) 60%,
+    transparent 100%
+  );
+  filter: blur(0.5px);
+  animation: fx-streak linear infinite;
+  will-change: transform, opacity;
+}
+.fx-streak::after {
+  content: "";
+  position: absolute;
+  inset: -2px 0;
+  background: inherit;
+  filter: blur(6px);
+  opacity: 0.6;
+}
+
+@keyframes fx-pulse {
+  0%, 100% { opacity: 0.18; transform: scale(1); }
+  50%      { opacity: 0.35; transform: scale(1.04); }
+}
+.fx-pulse {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 0, 0, 0.22) 0%,
+    rgba(255, 0, 0, 0.08) 40%,
+    transparent 70%
+  );
+  animation: fx-pulse 2.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  will-change: opacity, transform;
+}
+
+@keyframes fx-camera-push {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.015); }
+}
+.fx-camera-push {
+  animation: fx-camera-push 9s ease-in-out infinite;
+}
+
+/* ─── BLUEPRINT (why-us) ─── */
+.fx-blueprint-grid {
+  background-image:
+    linear-gradient(rgba(255, 0, 0, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.12) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+  opacity: 0.55;
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
+}
+
+@keyframes fx-scan-v {
+  0%   { transform: translate3d(0, -5%, 0); opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { transform: translate3d(0, 105%, 0); opacity: 0; }
+}
+.fx-scan-v {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 0, 0, 0.75) 30%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 0, 0, 0.75) 70%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 12px rgba(255, 0, 0, 0.8),
+    0 0 36px rgba(255, 0, 0, 0.4);
+  animation: fx-scan-v 7s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes fx-crosshair {
+  0%, 100% { opacity: 0.25; }
+  50%      { opacity: 0.55; }
+}
+.fx-crosshair {
+  position: absolute;
+  border: 1px dashed rgba(255, 0, 0, 0.35);
+  animation: fx-crosshair 4s ease-in-out infinite;
+}
+
+/* ─── FLOW (configurator) ─── */
+@keyframes fx-flow {
+  0%   { transform: translate3d(-120%, 0, 0); }
+  100% { transform: translate3d(120%, 0, 0); }
+}
+.fx-flow-line {
+  position: absolute;
+  height: 1px;
+  width: 40%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 0, 0, 0.6) 45%,
+    rgba(255, 200, 200, 0.9) 50%,
+    rgba(255, 0, 0, 0.6) 55%,
+    transparent 100%
+  );
+  filter: blur(0.4px);
+  animation: fx-flow linear infinite;
+  will-change: transform;
+}
+.fx-flow-line::after {
+  content: "";
+  position: absolute;
+  inset: -1px 0;
+  background: inherit;
+  filter: blur(4px);
+  opacity: 0.5;
+}
+
+/* subtle acceleration curve — perspective pan on the whole stack */
+@keyframes fx-accel {
+  0%, 100% { transform: perspective(1200px) rotateX(0.6deg) translateZ(0); }
+  50%      { transform: perspective(1200px) rotateX(-0.4deg) translateZ(0); }
+}
+.fx-accel {
+  animation: fx-accel 11s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+/* ─── MECHANICAL (admin/inventory) ─── */
+@keyframes fx-shimmer {
+  0%   { transform: translate3d(-60%, -60%, 0) rotate(15deg); }
+  100% { transform: translate3d(60%, 60%, 0) rotate(15deg); }
+}
+.fx-carbon {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.015) 0px,
+      rgba(255, 255, 255, 0.015) 2px,
+      transparent 2px,
+      transparent 6px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255, 255, 255, 0.012) 0px,
+      rgba(255, 255, 255, 0.012) 2px,
+      transparent 2px,
+      transparent 6px
+    );
+  opacity: 0.7;
+}
+.fx-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.06) 45%,
+    rgba(255, 0, 0, 0.08) 50%,
+    rgba(255, 255, 255, 0.06) 55%,
+    transparent 100%
+  );
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  animation: fx-shimmer 14s linear infinite;
+  mix-blend-mode: screen;
+}
+
+@keyframes fx-gear-spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.fx-gear {
+  position: absolute;
+  border: 1px solid rgba(255, 0, 0, 0.12);
+  border-radius: 50%;
+  animation: fx-gear-spin linear infinite;
+}
+.fx-gear::before,
+.fx-gear::after {
+  content: "";
+  position: absolute;
+  inset: 8%;
+  border: 1px dashed rgba(255, 255, 255, 0.06);
+  border-radius: 50%;
+}
+.fx-gear::after {
+  inset: 22%;
+  border-style: solid;
+  border-color: rgba(255, 0, 0, 0.08);
+}
+
+/* ─── IDLE (owner/contact) ─── */
+@keyframes fx-glow-breathe {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50%      { opacity: 0.5;  transform: scale(1.08); }
+}
+.fx-glow-breathe {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 0, 0, 0.3) 0%,
+    rgba(255, 0, 0, 0.1) 35%,
+    transparent 65%
+  );
+  animation: fx-glow-breathe 5.5s ease-in-out infinite;
+  will-change: opacity, transform;
+}
+
+@keyframes fx-fog-drift {
+  0%   { transform: translate3d(-20%, 0, 0); }
+  100% { transform: translate3d(20%, 0, 0); }
+}
+.fx-fog {
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 60%, rgba(255, 255, 255, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 30% at 70% 40%, rgba(255, 0, 0, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 50% 80%, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
+  width: 140%;
+  left: -20%;
+  animation: fx-fog-drift 22s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* — reduced motion: kill all fx animations — */
+@media (prefers-reduced-motion: reduce) {
+  .fx-streak,
+  .fx-pulse,
+  .fx-camera-push,
+  .fx-scan-v,
+  .fx-crosshair,
+  .fx-flow-line,
+  .fx-accel,
+  .fx-shimmer,
+  .fx-gear,
+  .fx-glow-breathe,
+  .fx-fog {
+    animation: none !important;
   }
 }

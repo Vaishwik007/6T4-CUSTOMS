@@ -30,3 +30,10 @@ supabase/.temp
 .claude/
 .claude-flow/
 .swarm/
+
+# agentdb / ruvector runtime databases
+agentdb.rvf
+agentdb.rvf.lock
+ruvector.db
+*.rvf
+*.rvf.lock

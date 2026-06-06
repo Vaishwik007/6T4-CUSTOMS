@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import { useState } from "react";
 import { cn } from "@/lib/utils/cn";
 
@@ -16,10 +16,8 @@ type Props = {
 const DEFAULT_SRC = "/images/brand/logo.jpeg";
 
 /**
- * Renders the master 6T4 Customs logo. Defaults to the JPEG but accepts a
- * per-call `src` override so individual surfaces can opt into a different asset
- * (e.g. navbar uses SVG for crispness, everywhere else uses JPEG).
- * Uses a plain <img> so the aspect ratio doesn't need to be known up front.
+ * Renders the master 6T4 Customs logo using Next.js Image for CLS prevention.
+ * Uses a fill container with explicit height so the layout reserve is stable.
  * onError → falls back to the stylised "6T4 / CUSTOMS" text wordmark.
  */
 export function BrandLogo({
@@ -30,20 +28,29 @@ export function BrandLogo({
 }: Props) {
   const [ok, setOk] = useState(true);
 
-  if (!ok) {
-    return <BrandWordmark size={fallbackTextSize} className={className} />;
-  }
+  if (!ok) return <BrandWordmark size={fallbackTextSize} className={className} />;
 
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={src}
-      alt="6T4 Customs"
-      onError={() => setOk(false)}
-      draggable={false}
-      className={cn("block h-auto w-auto select-none", className)}
-      style={{ height: `${height}px`, width: "auto", maxWidth: "100%" }}
-    />
+    <div
+      className={cn("relative flex-shrink-0", className)}
+      style={{
+        height: `${height}px`,
+        width: "auto",
+        minWidth: `${Math.round(height * 1.5)}px`,
+        maxWidth: `${height * 3}px`
+      }}
+    >
+      <Image
+        src={src}
+        alt="6T4 Customs"
+        fill
+        sizes={`${height * 3}px`}
+        className="object-contain object-left"
+        onError={() => setOk(false)}
+        priority={height >= 56}
+        draggable={false}
+      />
+    </div>
   );
 }
 

@@ -6,6 +6,7 @@ import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { GrainOverlay } from "./GrainOverlay";
 import { CursorGlow } from "./CursorGlow";
+import { FloatingContact } from "./FloatingContact";
 import { TachometerLoader } from "@/components/loading/TachometerLoader";
 
 /**
@@ -34,6 +35,7 @@ export function ChromeProvider({ children }: { children: React.ReactNode }) {
       <Navbar />
       <main className="relative">{children}</main>
       <Footer />
+      <FloatingContact />
       <GrainOverlay />
       <CursorGlow />
     </LenisProvider>

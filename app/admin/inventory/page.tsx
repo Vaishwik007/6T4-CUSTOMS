@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Plus, Search, Upload, Edit3, Trash2, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { formatPrice } from "@/lib/utils/formatPrice";
 import { cn } from "@/lib/utils/cn";
+import { BackgroundFX } from "@/components/fx/BackgroundFX";
 
 type Product = {
   id: string;
@@ -62,6 +63,7 @@ export default function InventoryPage() {
 
   return (
     <div className="space-y-6">
+      <BackgroundFX variant="mechanical" />
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-display text-[10px] uppercase tracking-[0.5em] text-neon">Inventory</p>

@@ -6,6 +6,7 @@ import { ModelCarousel } from "@/components/configurator/ModelCarousel";
 import { YearSelect } from "@/components/configurator/YearSelect";
 import { PartsPanel } from "@/components/configurator/PartsPanel";
 import { BikePreview } from "@/components/configurator/BikePreview";
+import { BackgroundFX } from "@/components/fx/BackgroundFX";
 
 export default function ConfiguratorPage() {
   const { step } = useBuildStore();
@@ -14,7 +15,9 @@ export default function ConfiguratorPage() {
   const showPreview = step === 4;
 
   return (
-    <section className="mx-auto max-w-[1440px] px-4 py-12 md:px-8 md:py-16">
+    <>
+      <BackgroundFX variant="flow" />
+      <section className="mx-auto max-w-[1440px] px-4 py-12 md:px-8 md:py-16">
       {!showPreview ? (
         <div className="min-h-[70vh]">
           {step === 1 && <BrandCarousel />}
@@ -31,6 +34,7 @@ export default function ConfiguratorPage() {
           </div>
         </div>
       )}
-    </section>
+      </section>
+    </>
   );
 }

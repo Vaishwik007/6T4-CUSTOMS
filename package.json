@@ -14,7 +14,8 @@
     "migrate": "tsx scripts/apply-migrations.ts",
     "seed": "tsx scripts/seed-supabase.ts",
     "setup": "tsx scripts/setup.ts",
-    "fetch-images": "tsx scripts/fetch-images.ts"
+    "fetch-images": "tsx scripts/fetch-images.ts",
+    "fetch-bikes": "tsx scripts/fetch-bike-images.ts"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -37,7 +38,7 @@
     "jspdf-autotable": "^5.0.7",
     "lenis": "^1.1.13",
     "lucide-react": "^0.453.0",
-    "next": "14.2.35",
+    "next": "^16.2.7",
     "papaparse": "^5.5.3",
     "pg": "^8.20.0",
     "react": "^18.3.1",
@@ -56,7 +57,7 @@
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.1",
-    "eslint-config-next": "14.2.35",
+    "eslint-config-next": "^16.2.7",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.13",
     "tsx": "^4.19.1",

@@ -1,8 +1,16 @@
 import { SignJWT, jwtVerify } from "jose";
 
-const SECRET = new TextEncoder().encode(
-  process.env.ADMIN_JWT_SECRET || "6t4-customs-dev-secret-change-me-in-production"
-);
+// CRIT-01 FIX: No fallback. The server refuses to start if this is absent.
+// This prevents forging admin JWTs with a publicly-known default.
+const rawSecret = process.env.ADMIN_JWT_SECRET;
+if (!rawSecret || rawSecret.length < 32) {
+  throw new Error(
+    "[6T4] ADMIN_JWT_SECRET env var is missing or too short (min 32 chars). " +
+    "Generate one with: openssl rand -hex 32"
+  );
+}
+const SECRET = new TextEncoder().encode(rawSecret);
+
 const ALG = "HS256";
 const COOKIE_NAME = "6t4_admin";
 const SESSION_TTL_HOURS = 8;

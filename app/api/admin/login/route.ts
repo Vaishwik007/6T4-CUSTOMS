@@ -112,10 +112,18 @@ export async function POST(req: NextRequest) {
     role: admin.role,
     username: admin.username
   });
+  // MED-05 FIX: sameSite "strict" prevents the cookie being sent on any
+  //   cross-site navigation, not just cross-site POSTs (lax only blocks the latter).
+  // MED-06 FIX: "secure" is set whenever the site URL is https:// regardless
+  //   of NODE_ENV, so staging/preview deployments also enforce HTTPS-only cookies.
+  const isSecure =
+    process.env.NEXT_PUBLIC_SITE_URL?.startsWith("https://") ??
+    process.env.NODE_ENV === "production";
+
   res.cookies.set(ADMIN_COOKIE, jwt, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: isSecure,
+    sameSite: "strict",
     path: "/",
     expires
   });

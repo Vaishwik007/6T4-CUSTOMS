@@ -11,10 +11,10 @@ const Patch = z.object({
   resetPassword: z.string().min(10).optional()
 });
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+type RouteContext = { params: Promise<{ id: string }> };
+
+export async function PATCH(req: NextRequest, context: RouteContext) {
+  const { id } = await context.params;
   const me = await getCurrentAdmin();
   if (!me) return NextResponse.json({ ok: false }, { status: 401 });
   if (me.role !== "super_admin")
@@ -35,7 +35,7 @@ export async function PATCH(
     update.force_password_change = true;
   }
 
-  const { error } = await supa.from("admin_users").update(update).eq("id", params.id);
+  const { error } = await supa.from("admin_users").update(update).eq("id", id);
   if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
 
   await logActivity({
@@ -43,7 +43,7 @@ export async function PATCH(
     adminUsername: me.username,
     action: parsed.data.resetPassword ? "admin_reset_password" : "admin_role_changed",
     targetType: "admin_user",
-    targetId: params.id,
+    targetId: id,
     metadata: { update: { ...parsed.data, resetPassword: parsed.data.resetPassword ? "***" : undefined } },
     ip: getClientIp(req.headers),
     userAgent: req.headers.get("user-agent")
@@ -52,21 +52,19 @@ export async function PATCH(
   return NextResponse.json({ ok: true });
 }
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest, context: RouteContext) {
+  const { id } = await context.params;
   const me = await getCurrentAdmin();
   if (!me) return NextResponse.json({ ok: false }, { status: 401 });
   if (me.role !== "super_admin")
     return NextResponse.json({ ok: false, error: "forbidden" }, { status: 403 });
-  if (params.id === me.sub)
+  if (id === me.sub)
     return NextResponse.json({ ok: false, error: "cannot_delete_self" }, { status: 400 });
 
   const supa = createAdminSupabase();
   if (!supa) return NextResponse.json({ ok: false, error: "backend_unconfigured" }, { status: 503 });
 
-  const { error } = await supa.from("admin_users").delete().eq("id", params.id);
+  const { error } = await supa.from("admin_users").delete().eq("id", id);
   if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
 
   await logActivity({
@@ -74,7 +72,7 @@ export async function DELETE(
     adminUsername: me.username,
     action: "admin_deleted",
     targetType: "admin_user",
-    targetId: params.id,
+    targetId: id,
     ip: getClientIp(req.headers),
     userAgent: req.headers.get("user-agent")
   });

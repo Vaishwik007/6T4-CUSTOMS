@@ -2,23 +2,64 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { CheckCircle2, MessageCircle, Copy, Check, Home as HomeIcon } from "lucide-react";
+import { CheckCircle2, MessageCircle, Copy, Check, Home as HomeIcon, Phone } from "lucide-react";
 import { useEffect, useState } from "react";
+import { createSupabaseBrowser } from "@/lib/supabase/client";
 
-export default function OrderPage({ params }: { params: { id: string } }) {
-  const [token, setToken] = useState<string>("");
+interface OrderPageProps {
+  params: { id: string };
+  searchParams: { token?: string };
+}
+
+export default function OrderPage({ params, searchParams }: OrderPageProps) {
+  const [token, setToken] = useState<string>(searchParams.token ?? "");
   const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(!searchParams.token);
 
   useEffect(() => {
-    // Derive a stable 6-char booking token from the order id so this page works even
-    // if the user reloads or the Supabase write was deferred.
-    const hash = params.id.replace(/[^a-z0-9]/gi, "").toUpperCase().slice(0, 6);
-    setToken(`6T4-${hash || "LOCKED"}`);
-  }, [params.id]);
+    // If a real token was passed via query param, use it directly
+    if (searchParams.token) {
+      setToken(searchParams.token);
+      setLoading(false);
+      return;
+    }
+
+    // Otherwise try to fetch the real booking_token from Supabase
+    const fetchToken = async () => {
+      const supa = createSupabaseBrowser();
+      if (supa) {
+        try {
+          const { data } = await supa
+            .from("orders")
+            .select("booking_token")
+            .eq("id", params.id)
+            .single();
+          if (data?.booking_token) {
+            setToken(data.booking_token);
+            setLoading(false);
+            return;
+          }
+        } catch {
+          // fall through to graceful degradation
+        }
+      }
+
+      // Last resort: derive a stable token from the UUID
+      const hash = params.id.replace(/[^a-z0-9]/gi, "").toUpperCase().slice(0, 6);
+      setToken(`6T4-${hash || "LOCKED"}`);
+      setLoading(false);
+    };
+
+    fetchToken();
+  }, [params.id, searchParams.token]);
 
   const waNumber = process.env.NEXT_PUBLIC_OWNER_WHATSAPP ?? "+919999999999";
-  const waText = encodeURIComponent(`Hi 6T4 Customs — order ${token} (id ${params.id})`);
+  const ownerPhone = process.env.NEXT_PUBLIC_OWNER_PHONE ?? waNumber;
+  const waText = encodeURIComponent(
+    `Hi 6T4 Customs — my order token is ${token} (order id: ${params.id}). Can you confirm?`
+  );
   const waHref = `https://wa.me/${waNumber.replace(/[^\d]/g, "")}?text=${waText}`;
+  const hasWhatsapp = waNumber !== "+919999999999";
 
   const copy = () => {
     navigator.clipboard.writeText(token);
@@ -63,6 +104,7 @@ export default function OrderPage({ params }: { params: { id: string } }) {
           Is <span className="text-neon text-glow">Locked In.</span>
         </motion.h1>
 
+        {/* Booking Token Card */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -72,13 +114,18 @@ export default function OrderPage({ params }: { params: { id: string } }) {
           <div className="flex items-center justify-between gap-4">
             <div className="text-left">
               <p className="text-[10px] uppercase tracking-[0.3em] text-bone/50">Booking Token</p>
-              <p className="mt-1 text-stencil text-3xl text-neon">{token}</p>
+              {loading ? (
+                <div className="mt-1 h-8 w-32 animate-pulse bg-white/5 rounded" />
+              ) : (
+                <p className="mt-1 text-stencil text-3xl text-neon">{token}</p>
+              )}
             </div>
             <button
               type="button"
               onClick={copy}
+              disabled={loading}
               data-cursor="cta"
-              className="inline-flex items-center gap-2 border border-white/15 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-bone/70 transition-colors hover:border-neon hover:text-neon"
+              className="inline-flex items-center gap-2 border border-white/15 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-bone/70 transition-colors hover:border-neon hover:text-neon disabled:opacity-40"
             >
               {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
               {copied ? "Copied" : "Copy"}
@@ -89,34 +136,59 @@ export default function OrderPage({ params }: { params: { id: string } }) {
           </p>
         </motion.div>
 
+        {/* Notification instructions */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.75 }}
-          className="mt-8 space-y-2 text-sm text-bone/60"
+          className="mt-6 border border-white/5 bg-carbon/60 px-5 py-4 text-left"
         >
-          <p>
-            Arjun will verify on WhatsApp within 24 hours and reserve a bay slot for your install.
-          </p>
-          <p>
-            Bring your bike + token. Or track the parts dispatch from your account.
-          </p>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-neon mb-2">What Happens Next</p>
+          <ul className="space-y-2 text-sm text-bone/60">
+            <li className="flex gap-2">
+              <span className="text-neon shrink-0">01</span>
+              <span>Save your booking token — it&apos;s your proof of order.</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-neon shrink-0">02</span>
+              <span>
+                {hasWhatsapp
+                  ? "Arjun will verify on WhatsApp within 24 hours and reserve a bay slot."
+                  : "Call or visit the garage — we'll confirm your slot and reserve parts."}
+              </span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-neon shrink-0">03</span>
+              <span>Bring your bike + token on the confirmed date. Parts will be ready.</span>
+            </li>
+          </ul>
         </motion.div>
 
+        {/* CTA buttons */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9 }}
           className="mt-10 flex flex-wrap justify-center gap-3"
         >
-          <Link
-            href={waHref}
-            target="_blank"
-            data-cursor="cta"
-            className="inline-flex items-center gap-2 bg-neon px-6 py-3 text-display text-xs uppercase tracking-[0.2em] font-bold text-black transition-all hover:bg-white hover:shadow-neon-lg"
-          >
-            <MessageCircle className="h-4 w-4" /> Message on WhatsApp
-          </Link>
+          {hasWhatsapp ? (
+            <Link
+              href={waHref}
+              target="_blank"
+              data-cursor="cta"
+              className="inline-flex items-center gap-2 bg-neon px-6 py-3 text-display text-xs uppercase tracking-[0.2em] font-bold text-black transition-all hover:bg-white hover:shadow-neon-lg"
+            >
+              <MessageCircle className="h-4 w-4" /> Message on WhatsApp
+            </Link>
+          ) : (
+            <Link
+              href={`tel:${ownerPhone}`}
+              data-cursor="cta"
+              className="inline-flex items-center gap-2 bg-neon px-6 py-3 text-display text-xs uppercase tracking-[0.2em] font-bold text-black transition-all hover:bg-white"
+            >
+              <Phone className="h-4 w-4" /> Call the Garage
+            </Link>
+          )}
           <Link
             href="/account"
             data-cursor="cta"

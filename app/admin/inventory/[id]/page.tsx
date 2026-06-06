@@ -28,13 +28,20 @@ type HistoryRow = {
   created_at: string;
 };
 
-export default function EditProductPage({ params }: { params: { id: string } }) {
+export default function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const [productId, setProductId] = useState<string | null>(null);
   const [product, setProduct] = useState<Product | null>(null);
   const [history, setHistory] = useState<HistoryRow[]>([]);
   const [notFound, setNotFound] = useState(false);
 
+  // Resolve async params (Next.js 14 returns sync, 15 returns Promise)
   useEffect(() => {
-    fetch(`/api/admin/products/${params.id}`)
+    Promise.resolve(params).then((p) => setProductId(p.id));
+  }, [params]);
+
+  useEffect(() => {
+    if (!productId) return;
+    fetch(`/api/admin/products/${productId}`)
       .then((r) => r.json())
       .then((d) => {
         if (!d.ok) {
@@ -44,7 +51,7 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
         setProduct(d.product);
         setHistory(d.history ?? []);
       });
-  }, [params.id]);
+  }, [productId]);
 
   return (
     <div className="space-y-6">

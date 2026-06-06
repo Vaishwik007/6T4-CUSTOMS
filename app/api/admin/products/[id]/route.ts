@@ -16,31 +16,44 @@ const PatchBody = z.object({
   stockReason: z.enum(["restock", "adjust", "return", "damage", "sale", "initial"]).optional(),
   lowStockThreshold: z.number().int().nonnegative().optional(),
   images: z.array(z.string()).optional(),
-  compatibility: z.any().optional(),
+  // HIGH-07 FIX: replace z.any() with strict schema
+  compatibility: z.union([
+    z.literal("universal"),
+    z.array(z.object({
+      brand: z.string().max(100),
+      model: z.string().max(100),
+      yearStart: z.number().int().min(1900).max(2100),
+      yearEnd: z.number().int().min(1900).max(2100).nullable()
+    }))
+  ]).optional(),
   active: z.boolean().optional()
 });
 
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
+type RouteContext = { params: Promise<{ id: string }> };
+
+export async function GET(_: NextRequest, context: RouteContext) {
+  const { id } = await context.params;
   const me = await getCurrentAdmin();
   if (!me) return NextResponse.json({ ok: false }, { status: 401 });
   const supa = createAdminSupabase();
   if (!supa) return NextResponse.json({ ok: false, error: "backend_unconfigured" }, { status: 503 });
 
-  const { data: product, error } = await supa.from("products").select("*").eq("id", params.id).maybeSingle();
+  const { data: product, error } = await supa.from("products").select("*").eq("id", id).maybeSingle();
   if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
   if (!product) return NextResponse.json({ ok: false, error: "not_found" }, { status: 404 });
 
   const { data: history } = await supa
     .from("inventory_history")
     .select("*")
-    .eq("product_id", params.id)
+    .eq("product_id", id)
     .order("created_at", { ascending: false })
     .limit(20);
 
   return NextResponse.json({ ok: true, product, history: history ?? [] });
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, context: RouteContext) {
+  const { id } = await context.params;
   const me = await getCurrentAdmin();
   if (!me) return NextResponse.json({ ok: false }, { status: 401 });
   if (me.role === "staff")
@@ -53,7 +66,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const supa = createAdminSupabase();
   if (!supa) return NextResponse.json({ ok: false, error: "backend_unconfigured" }, { status: 503 });
 
-  const { data: existing } = await supa.from("products").select("*").eq("id", params.id).maybeSingle();
+  const { data: existing } = await supa.from("products").select("*").eq("id", id).maybeSingle();
   if (!existing) return NextResponse.json({ ok: false, error: "not_found" }, { status: 404 });
 
   const update: Record<string, unknown> = {};
@@ -81,12 +94,12 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
   if (newStock != null) update.stock = newStock;
 
-  const { error } = await supa.from("products").update(update).eq("id", params.id);
+  const { error } = await supa.from("products").update(update).eq("id", id);
   if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
 
   if (change != null && change !== 0) {
     await supa.from("inventory_history").insert({
-      product_id: params.id,
+      product_id: id,
       change,
       new_stock: newStock,
       reason: p.stockReason ?? (change > 0 ? "restock" : "adjust"),
@@ -97,7 +110,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
       adminUsername: me.username,
       action: "stock_adjusted",
       targetType: "product",
-      targetId: params.id,
+      targetId: id,
       metadata: { change, newStock, reason: p.stockReason },
       ip: getClientIp(req.headers)
     });
@@ -110,7 +123,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
         severity: "warning",
         title: `Low stock: ${existing.name}`,
         body: `Only ${newStock} left (threshold ${threshold}). Restock needed.`,
-        metadata: { productId: params.id, stock: newStock }
+        metadata: { productId: id, stock: newStock }
       });
     } else if (newStock === 0) {
       await supa.from("notifications").insert({
@@ -118,7 +131,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
         severity: "critical",
         title: `Out of stock: ${existing.name}`,
         body: `Product ${existing.sku} is fully depleted.`,
-        metadata: { productId: params.id }
+        metadata: { productId: id }
       });
     }
   }
@@ -128,7 +141,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     adminUsername: me.username,
     action: "product_updated",
     targetType: "product",
-    targetId: params.id,
+    targetId: id,
     metadata: { update },
     ip: getClientIp(req.headers)
   });
@@ -136,7 +149,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   return NextResponse.json({ ok: true });
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, context: RouteContext) {
+  const { id } = await context.params;
   const me = await getCurrentAdmin();
   if (!me) return NextResponse.json({ ok: false }, { status: 401 });
   if (me.role === "staff")
@@ -145,7 +159,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
   const supa = createAdminSupabase();
   if (!supa) return NextResponse.json({ ok: false, error: "backend_unconfigured" }, { status: 503 });
 
-  const { error } = await supa.from("products").delete().eq("id", params.id);
+  const { error } = await supa.from("products").delete().eq("id", id);
   if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
 
   await logActivity({
@@ -153,7 +167,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     adminUsername: me.username,
     action: "product_deleted",
     targetType: "product",
-    targetId: params.id,
+    targetId: id,
     ip: getClientIp(req.headers)
   });
 

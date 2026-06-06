@@ -7,7 +7,7 @@ type CookieItem = { name: string; value: string; options?: CookieOptions };
 /** Server component / route handler Supabase client. Returns null if env vars missing. */
 export async function createServerSupabase() {
   if (!isSupabaseConfigured()) return null;
-  const cookieStore = cookies();
+  const cookieStore = await cookies(); // Next.js 15+: cookies() is async
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

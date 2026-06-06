@@ -8,7 +8,10 @@ const Body = z.object({
   status: z.enum(["pending", "confirmed", "in-progress", "ready", "delivered", "cancelled"])
 });
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+type RouteContext = { params: Promise<{ id: string }> };
+
+export async function PATCH(req: NextRequest, context: RouteContext) {
+  const { id } = await context.params;
   const me = await getCurrentAdmin();
   if (!me) return NextResponse.json({ ok: false }, { status: 401 });
 
@@ -22,7 +25,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   const { error } = await supa
     .from("orders")
     .update({ status: parsed.data.status })
-    .eq("id", params.id);
+    .eq("id", id);
   if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 400 });
 
   await logActivity({
@@ -30,7 +33,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     adminUsername: me.username,
     action: "order_status_changed",
     targetType: "order",
-    targetId: params.id,
+    targetId: id,
     metadata: { status: parsed.data.status },
     ip: getClientIp(req.headers)
   });

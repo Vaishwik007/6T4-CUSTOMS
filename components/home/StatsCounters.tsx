@@ -61,7 +61,7 @@ export function StatsCounters() {
               <div className="mt-3 text-display text-xs uppercase tracking-[0.3em] text-bone">
                 {s.label}
               </div>
-              <div className="mt-1 text-[10px] uppercase tracking-[0.3em] text-bone/40">
+              <div className="mt-1 text-[10px] uppercase tracking-[0.3em] text-bone/60">
                 {s.accent}
               </div>
             </motion.div>

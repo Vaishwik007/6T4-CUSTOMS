@@ -90,7 +90,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-black text-bone">
+    <div className="min-h-screen text-bone">
       {/* Top rail */}
       <header className="fixed inset-x-0 top-0 z-40 border-b border-white/5 bg-black/90 backdrop-blur">
         <div className="flex h-14 items-center justify-between px-4 md:px-6">

@@ -43,6 +43,16 @@ export function TachometerLoader() {
       return;
     }
 
+    // Skip loader on slow connections or when data-saver is enabled
+    const nav = window.navigator as Navigator & { connection?: { effectiveType?: string; saveData?: boolean } };
+    const conn = nav.connection;
+    if (conn && (conn.effectiveType === "2g" || conn.saveData)) {
+      sessionStorage.setItem(SESSION_KEY, "1");
+      setShown(true);
+      setShouldRender(false);
+      return;
+    }
+
     let cancelled = false;
     const finishSequence = async () => {
       if (cancelled) return;
@@ -136,7 +146,7 @@ export function TachometerLoader() {
             muted
             playsInline
             autoPlay
-            preload="auto"
+            preload="metadata"
             aria-hidden
           />
 

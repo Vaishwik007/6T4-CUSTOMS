@@ -1,5 +1,11 @@
 import type { FeaturedBuild } from "./types";
 
+/** Before/after images are real photos of each bike, downloaded by
+ *  scripts/fetch-bike-images.ts. FeaturedBuilds falls back to a silhouette
+ *  if a file is missing. */
+const before = (id: string) => `/images/featured/${id}-before.webp`;
+const after = (id: string) => `/images/featured/${id}-after.webp`;
+
 export const FEATURED_BUILDS: FeaturedBuild[] = [
   {
     id: "panigale-v4-track",
@@ -7,8 +13,8 @@ export const FEATURED_BUILDS: FeaturedBuild[] = [
     bike: "Ducati Panigale V4 S",
     mods: ["Akrapovič Full Ti", "Öhlins NIX30", "Brembo Stylema", "ECU Race Map"],
     hpGain: 18,
-    beforeImage: "/images/featured/panigale-v4-track-before.webp",
-    afterImage: "/images/featured/panigale-v4-track-after.webp"
+    beforeImage: before("panigale-v4-track"),
+    afterImage: after("panigale-v4-track")
   },
   {
     id: "duke-890-streetfighter",
@@ -16,8 +22,8 @@ export const FEATURED_BUILDS: FeaturedBuild[] = [
     bike: "KTM 890 Duke R",
     mods: ["SC-Project CR-T", "DNA Stage 2", "Stage 2 Flash", "Frame Sliders"],
     hpGain: 11,
-    beforeImage: "/images/featured/duke-890-streetfighter-before.webp",
-    afterImage: "/images/featured/duke-890-streetfighter-after.webp"
+    beforeImage: before("duke-890-streetfighter"),
+    afterImage: after("duke-890-streetfighter")
   },
   {
     id: "interceptor-650-cafe",
@@ -25,8 +31,8 @@ export const FEATURED_BUILDS: FeaturedBuild[] = [
     bike: "Royal Enfield Continental GT 650",
     mods: ["S&S Slip-On", "K&N Filter", "Clip-Ons", "Custom Seat"],
     hpGain: 6,
-    beforeImage: "/images/featured/interceptor-650-cafe-before.webp",
-    afterImage: "/images/featured/interceptor-650-cafe-after.webp"
+    beforeImage: before("interceptor-650-cafe"),
+    afterImage: after("interceptor-650-cafe")
   },
   {
     id: "s1000rr-streetable",
@@ -34,8 +40,8 @@ export const FEATURED_BUILDS: FeaturedBuild[] = [
     bike: "BMW S 1000 RR",
     mods: ["Akrapovič Slip-On", "ECU Flash", "Öhlins TTX", "Carbon Fairings"],
     hpGain: 14,
-    beforeImage: "/images/featured/s1000rr-streetable-before.webp",
-    afterImage: "/images/featured/s1000rr-streetable-after.webp"
+    beforeImage: before("s1000rr-streetable"),
+    afterImage: after("s1000rr-streetable")
   },
   {
     id: "himalayan-overland",
@@ -43,8 +49,8 @@ export const FEATURED_BUILDS: FeaturedBuild[] = [
     bike: "Royal Enfield Himalayan 450",
     mods: ["Givi Outback Panniers", "Barkbusters", "Scotts Stabilizer", "Tall Screen"],
     hpGain: 0,
-    beforeImage: "/images/featured/himalayan-overland-before.webp",
-    afterImage: "/images/featured/himalayan-overland-after.webp"
+    beforeImage: before("himalayan-overland"),
+    afterImage: after("himalayan-overland")
   }
 ];
 

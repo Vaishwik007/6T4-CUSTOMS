@@ -3,12 +3,15 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
+import { BackgroundFX } from "@/components/fx/BackgroundFX";
 
 export default function OwnerPage() {
   const [imgOk, setImgOk] = useState(true);
 
   return (
-    <section className="relative px-4 pt-32 md:px-8 md:pt-40">
+    <>
+      <BackgroundFX variant="idle" />
+      <section className="relative px-4 pt-32 md:px-8 md:pt-40">
       <div className="mx-auto grid max-w-[1440px] items-center gap-12 md:grid-cols-[1fr_1.2fr]">
         <motion.div
           initial={{ opacity: 0 }}
@@ -23,12 +26,35 @@ export default function OwnerPage() {
             <br />
             <span className="text-neon text-glow">Arjun Rao.</span>
           </h1>
-          <p className="mt-6 max-w-xl text-base text-bone/70 md:text-lg">
-            Founder. Head tuner. TIG welder. Sleep optional.
+          <p className="mt-6 max-w-xl text-base text-bone/70 md:text-lg leading-relaxed">
+            Arjun started porting two-stroke heads in a single bay in Bachupally in 2012 — no CNC,
+            no fancy dyno, just a bench torch and a borrowed oscilloscope. Twelve years and 1,247 bikes
+            later, 6T4 runs an in-house eddy-current dyno, a Fronius TIG rig, and the only bench-mapping
+            setup in Hyderabad calibrated to Indian fuel quality.
+          </p>
+          <p className="mt-4 max-w-xl text-sm text-bone/60 leading-relaxed">
+            He maps every Stage 2 and above job personally. If the dyno sheet doesn't match the target
+            power band, the bike doesn't leave.
           </p>
           <blockquote className="mt-10 border-l-2 border-neon pl-5 text-lg italic text-bone/80 md:text-xl">
-            "Performance over comfort. Always."
+            "Performance over comfort. Every time."
           </blockquote>
+
+          <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3">
+            {[
+              { label: "Founded", value: "2012" },
+              { label: "Bikes Mapped", value: "1,247+" },
+              { label: "Brands", value: "23" },
+              { label: "Speciality", value: "ECU & Fab" },
+              { label: "Certification", value: "TIG Certified" },
+              { label: "Dyno", value: "In-House" },
+            ].map(({ label, value }) => (
+              <div key={label} className="border border-white/5 bg-carbon/60 p-4">
+                <div className="text-[10px] uppercase tracking-[0.3em] text-bone/50">{label}</div>
+                <div className="mt-1 text-stencil text-xl text-neon">{value}</div>
+              </div>
+            ))}
+          </div>
         </motion.div>
 
         {/* Portrait — real photo with SVG silhouette fallback */}
@@ -101,6 +127,7 @@ export default function OwnerPage() {
           </div>
         </motion.div>
       </div>
-    </section>
+      </section>
+    </>
   );
 }

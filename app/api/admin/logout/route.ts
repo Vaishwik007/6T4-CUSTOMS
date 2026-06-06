@@ -5,7 +5,7 @@ import { createAdminSupabase } from "@/lib/supabase/admin";
 import { logActivity } from "@/lib/admin/activity-log";
 
 export async function POST() {
-  const jar = cookies();
+  const jar = await cookies(); // Next.js 15+: cookies() is async
   const token = jar.get(ADMIN_COOKIE)?.value;
   if (token) {
     const payload = await verifyAdminJwt(token);

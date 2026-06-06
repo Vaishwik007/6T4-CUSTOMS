@@ -1,9 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Activity, Hammer, Quote, Star } from "lucide-react";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { TESTIMONIALS } from "@/lib/data/featured";
+import { BackgroundFX } from "@/components/fx/BackgroundFX";
 
 const PILLARS = [
   {
@@ -21,15 +23,20 @@ const PILLARS = [
 ];
 
 const TOOLS = [
-  "TIG 200 AC/DC",
+  "Fronius TIG 200 AC/DC",
   "Laser Wheel Alignment",
-  "Torque Plates",
-  "Boroscope"
+  "Torque Plates & Gauges",
+  "Boroscope Inspection",
+  "In-House Eddy Dyno",
+  "Bench ECU Programmer",
+  "K-LINE / OBD Diagnostic",
+  "Nitrogen Tyre Inflation"
 ];
 
 export default function WhyUsPage() {
   return (
     <>
+      <BackgroundFX variant="blueprint" />
       {/* Hero */}
       <section className="relative px-4 pt-32 md:px-8 md:pt-40">
         <div className="mx-auto max-w-[1440px]">
@@ -144,6 +151,21 @@ export default function WhyUsPage() {
                 </footer>
               </motion.blockquote>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="border-t border-white/5 bg-neon/5 px-4 py-16 md:px-8">
+        <div className="mx-auto max-w-[1440px] text-center">
+          <p className="text-display text-[10px] uppercase tracking-[0.5em] text-neon">Ready?</p>
+          <h2 className="mt-3 text-display text-4xl font-black uppercase md:text-6xl">
+            Book the Bay.
+          </h2>
+          <p className="mt-4 text-bone/70">Walk in. We'll take it from there.</p>
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <Link href="/contact" className="btn-mech">Contact Us</Link>
+            <Link href="/configurator" className="btn-mech-ghost">Build Online</Link>
           </div>
         </div>
       </section>

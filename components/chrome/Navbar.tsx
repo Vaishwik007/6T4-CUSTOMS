@@ -44,24 +44,16 @@ export function Navbar() {
           data-cursor="cta"
           aria-label="6T4 Customs — Home"
         >
-          {/* Very small (<360px) → compact logo so it doesn't push nav controls off-screen */}
+          {/* Single responsive logo: 40px on mobile, 56px on desktop — fits inside h-16 navbar */}
           <BrandLogo
             src="/images/brand/logo.svg"
-            height={64}
+            height={40}
             fallbackTextSize="base"
-            className="sm:hidden"
+            className="md:hidden"
           />
-          {/* 360–767px */}
           <BrandLogo
             src="/images/brand/logo.svg"
-            height={96}
-            fallbackTextSize="lg"
-            className="hidden sm:block md:hidden"
-          />
-          {/* 768px+ desktop */}
-          <BrandLogo
-            src="/images/brand/logo.svg"
-            height={144}
+            height={56}
             fallbackTextSize="xl"
             className="hidden md:block"
           />
@@ -73,7 +65,7 @@ export function Navbar() {
               key={n.href}
               href={n.href}
               data-cursor="cta"
-              className="text-display text-xs uppercase tracking-[0.2em] text-bone/70 transition-colors hover:text-neon"
+              className="text-display text-xs uppercase tracking-[0.2em] text-bone/80 transition-colors hover:text-neon"
             >
               {n.label}
             </Link>

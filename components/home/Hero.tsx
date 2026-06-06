@@ -5,9 +5,12 @@ import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+const HERO_POSTER = "/images/hero.webp";
+
 export function Hero() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [videoOk, setVideoOk] = useState(true);
+  // Start with video disabled (video file missing) — go straight to real Unsplash poster
+  const [videoOk, setVideoOk] = useState(false);
   const [posterOk, setPosterOk] = useState(true);
 
   // Pause video if user prefers reduced motion
@@ -20,29 +23,19 @@ export function Hero() {
 
   return (
     <section className="relative isolate flex min-h-screen items-center overflow-hidden">
-      {/* layered backdrop */}
-      <div className="absolute inset-0 -z-30 bg-gradient-to-b from-black via-black to-carbon" />
+      {/* layered backdrop — gradient kept but alpha-softened so the page-level
+         BackgroundFX (ignition sparks + streaks + pulse) remains visible. */}
+      <div className="absolute inset-0 -z-30 bg-gradient-to-b from-black/70 via-black/50 to-carbon/40" />
 
-      {/* cinematic bike video — falls back to poster image, then to SVG silhouette */}
-      {videoOk ? (
-        <video
-          ref={videoRef}
-          className="absolute inset-0 -z-20 h-full w-full object-cover opacity-40 mix-blend-screen"
-          autoPlay
-          muted
-          loop
-          playsInline
-          poster="/images/hero.webp"
-          onError={() => setVideoOk(false)}
-        >
-          <source src="/video/hero-loop.mp4" type="video/mp4" />
-        </video>
-      ) : posterOk ? (
+      {/* Hero background — real Unsplash motorcycle photo via next/image CDN.
+          Falls back to SVG silhouette if the URL fails (e.g. offline). */}
+      {posterOk ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src="/images/hero.webp"
+          src={HERO_POSTER}
           alt=""
-          className="absolute inset-0 -z-20 h-full w-full object-cover opacity-40 mix-blend-screen"
+          fetchPriority="high"
+          className="absolute inset-0 -z-20 h-full w-full object-cover opacity-45 mix-blend-screen"
           onError={() => setPosterOk(false)}
         />
       ) : (
@@ -143,13 +136,13 @@ export function Hero() {
           className="mt-20 grid max-w-3xl grid-cols-3 border border-white/10 bg-black/30 backdrop-blur"
         >
           {[
-            { v: "1,200+", l: "Bikes Tuned" },
-            { v: "+18,400", l: "Total HP Gained" },
-            { v: "12", l: "Years On The Bench" }
+            { v: "1,247+", l: "Bikes Tuned" },
+            { v: "18,420", l: "HP Added" },
+            { v: "12", l: "Years on the Bench" }
           ].map((s) => (
             <div key={s.l} className="border-r border-white/10 px-4 py-5 last:border-r-0 md:px-6">
               <div className="text-stencil text-2xl text-neon md:text-4xl">{s.v}</div>
-              <div className="mt-1 text-[10px] uppercase tracking-[0.2em] text-bone/50 md:text-xs">
+              <div className="mt-1 text-[10px] uppercase tracking-[0.2em] text-bone/70 md:text-xs">
                 {s.l}
               </div>
             </div>

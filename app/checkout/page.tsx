@@ -17,13 +17,28 @@ const schema = z.object({
   fullName: z.string().min(2, "Required"),
   phone: z.string().regex(/^[+\d\s-]{7,}$/i, "Enter a valid phone"),
   email: z.string().email("Valid email required"),
-  address1: z.string().min(4, "Street address required"),
-  city: z.string().min(2, "City required"),
-  state: z.string().min(2, "State required"),
-  pin: z.string().regex(/^\d{4,6}$/i, "Postal code"),
+  address1: z.string().optional(),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  pin: z.string().optional(),
   delivery: z.enum(["in-shop", "delivery"]),
   payment: z.enum(["upi", "card", "pay-at-shop"]),
   notes: z.string().optional()
+}).superRefine((val, ctx) => {
+  if (val.delivery === "delivery") {
+    if (!val.address1 || val.address1.length < 4) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Street address required", path: ["address1"] });
+    }
+    if (!val.city || val.city.length < 2) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "City required", path: ["city"] });
+    }
+    if (!val.state || val.state.length < 2) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "State required", path: ["state"] });
+    }
+    if (!val.pin || !/^\d{4,6}$/.test(val.pin)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Postal code required", path: ["pin"] });
+    }
+  }
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -33,6 +48,7 @@ export default function CheckoutPage() {
   const items = useCartStore((s) => s.items);
   const clear = useCartStore((s) => s.clear);
   const [busy, setBusy] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const { register, handleSubmit, watch, setValue, formState } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -51,6 +67,7 @@ export default function CheckoutPage() {
 
   const onSubmit = handleSubmit(async (values) => {
     setBusy(true);
+    setSubmitError(null);
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
@@ -66,11 +83,13 @@ export default function CheckoutPage() {
           ...values
         })
       });
-      const data = (await res.json()) as { orderId: string };
+      if (!res.ok) throw new Error("Server error");
+      const data = (await res.json()) as { orderId: string; token: string };
       clear();
-      router.push(`/order/${data.orderId}`);
+      router.push(`/order/${data.orderId}?token=${data.token}`);
     } catch (err) {
       console.error(err);
+      setSubmitError("Something went wrong. Please try again or contact us on WhatsApp.");
       setBusy(false);
     }
   });
@@ -97,22 +116,30 @@ export default function CheckoutPage() {
               <Field label="Email" error={formState.errors.email?.message} className="md:col-span-2">
                 <input className="input" type="email" {...register("email")} />
               </Field>
-              <Field
-                label="Street Address"
-                error={formState.errors.address1?.message}
-                className="md:col-span-2"
-              >
-                <input className="input" {...register("address1")} />
-              </Field>
-              <Field label="City" error={formState.errors.city?.message}>
-                <input className="input" {...register("city")} />
-              </Field>
-              <Field label="State" error={formState.errors.state?.message}>
-                <input className="input" {...register("state")} />
-              </Field>
-              <Field label="Postal Code" error={formState.errors.pin?.message}>
-                <input className="input" inputMode="numeric" {...register("pin")} />
-              </Field>
+              {delivery === "in-shop" ? (
+                <p className="md:col-span-2 rounded border border-neon/20 bg-neon-900/10 px-4 py-3 text-xs text-neon/80">
+                  No shipping address needed — just bring your bike to the bay.
+                </p>
+              ) : (
+                <>
+                  <Field
+                    label="Street Address"
+                    error={formState.errors.address1?.message}
+                    className="md:col-span-2"
+                  >
+                    <input className="input" {...register("address1")} />
+                  </Field>
+                  <Field label="City" error={formState.errors.city?.message}>
+                    <input className="input" {...register("city")} />
+                  </Field>
+                  <Field label="State" error={formState.errors.state?.message}>
+                    <input className="input" {...register("state")} />
+                  </Field>
+                  <Field label="Postal Code" error={formState.errors.pin?.message}>
+                    <input className="input" inputMode="numeric" {...register("pin")} />
+                  </Field>
+                </>
+              )}
             </div>
           </Section>
 
@@ -222,6 +249,19 @@ export default function CheckoutPage() {
             >
               {busy ? "Locking…" : "Confirm & Lock In"} <ArrowRight className="h-4 w-4" />
             </motion.button>
+            {submitError && (
+              <div className="mt-4 border border-neon/30 bg-neon-900/10 p-3 text-xs text-neon">
+                <p>{submitError}</p>
+                <a
+                  href={`https://wa.me/${process.env.NEXT_PUBLIC_OWNER_WHATSAPP ?? "919849000000"}`.replace(/[^\d:/./]/g, "")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 inline-flex items-center gap-1 underline hover:no-underline"
+                >
+                  Message on WhatsApp instead
+                </a>
+              </div>
+            )}
             <p className="mt-3 text-center text-[10px] uppercase tracking-[0.3em] text-bone/40">
               Owner confirms on WhatsApp
             </p>

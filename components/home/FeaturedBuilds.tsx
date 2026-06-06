@@ -51,10 +51,17 @@ export function FeaturedBuilds() {
           </div>
         </div>
 
-        <div className="embla mt-10" ref={emblaRef}>
+        <div
+          className="embla mt-10"
+          ref={emblaRef}
+          role="region"
+          aria-label="Featured builds carousel"
+          aria-live="polite"
+          aria-roledescription="carousel"
+        >
           <div className="embla__container gap-4">
             {FEATURED_BUILDS.map((b, i) => (
-              <BuildCard key={b.id} build={b} index={i} />
+              <BuildCard key={b.id} build={b} index={i} total={FEATURED_BUILDS.length} />
             ))}
           </div>
         </div>
@@ -63,7 +70,7 @@ export function FeaturedBuilds() {
   );
 }
 
-function BuildCard({ build: b, index: i }: { build: FeaturedBuild; index: number }) {
+function BuildCard({ build: b, index: i, total }: { build: FeaturedBuild; index: number; total: number }) {
   const [imgOk, setImgOk] = useState(!!b.afterImage);
 
   return (
@@ -74,6 +81,9 @@ function BuildCard({ build: b, index: i }: { build: FeaturedBuild; index: number
       transition={{ duration: 0.4, delay: i * 0.06 }}
       className="embla__slide group neon-edge relative w-[320px] cursor-default overflow-hidden bg-carbon md:w-[420px]"
       data-cursor="cta"
+      role="group"
+      aria-roledescription="slide"
+      aria-label={`Build ${i + 1} of ${total}: ${b.title}`}
     >
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-gunmetal to-black">
         {b.afterImage && imgOk ? (
