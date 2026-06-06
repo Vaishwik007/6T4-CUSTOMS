@@ -28,7 +28,8 @@ export function ProductGallery({
 
   return (
     <div className="space-y-3">
-      <div className="neon-edge relative aspect-square w-full overflow-hidden border border-white/10 bg-black/60">
+      {/* White-background product image container — all parts use white bg per brand standard */}
+      <div className="neon-edge relative aspect-square w-full overflow-hidden border border-white/10 bg-white">
         <span className="pointer-events-none absolute left-0 top-0 z-[1] h-3 w-3 border-l border-t border-neon" />
         <span className="pointer-events-none absolute right-0 top-0 z-[1] h-3 w-3 border-r border-t border-neon" />
         <span className="pointer-events-none absolute bottom-0 left-0 z-[1] h-3 w-3 border-b border-l border-neon" />
@@ -41,7 +42,8 @@ export function ProductGallery({
             fill
             priority={active === 0}
             sizes="(max-width: 768px) 100vw, 600px"
-            className="object-cover"
+            className="object-contain p-2"
+            unoptimized={valid[active].startsWith("/api/")}
           />
         ) : (
           <div className="grid h-full place-items-center">
@@ -65,12 +67,19 @@ export function ProductGallery({
                 type="button"
                 onClick={() => setActive(i)}
                 className={cn(
-                  "relative block aspect-square w-full overflow-hidden border transition-colors",
+                  "relative block aspect-square w-full overflow-hidden border bg-white transition-colors",
                   active === i ? "border-neon" : "border-white/10 hover:border-white/30"
                 )}
                 aria-label={`View image ${i + 1}`}
               >
-                <Image src={src} alt="" fill sizes="120px" className="object-cover" />
+                <Image
+                  src={src}
+                  alt=""
+                  fill
+                  sizes="120px"
+                  className="object-contain p-1"
+                  unoptimized={src.startsWith("/api/")}
+                />
               </button>
             </li>
           ))}

@@ -46,17 +46,19 @@ function ProductCard({ product: p }: { product: Product }) {
       <span className="pointer-events-none absolute bottom-0 left-0 z-[1] h-2 w-2 border-b border-l border-neon" />
       <span className="pointer-events-none absolute bottom-0 right-0 z-[1] h-2 w-2 border-b border-r border-neon" />
 
-      <div className="relative aspect-[5/4] w-full overflow-hidden bg-black/60">
+      {/* White-background product image — always white regardless of image type */}
+      <div className="relative aspect-[5/4] w-full overflow-hidden bg-white">
         {primary ? (
           <Image
             src={primary}
             alt={p.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className="object-contain p-2 transition-transform duration-500 group-hover:scale-105"
+            unoptimized={primary.startsWith("/api/")}
           />
         ) : (
-          <div className="grid h-full place-items-center">
+          <div className="grid h-full place-items-center bg-white">
             <span className="text-display text-2xl uppercase tracking-[0.3em] text-neon/30">
               {p.category.slice(0, 3)}
             </span>

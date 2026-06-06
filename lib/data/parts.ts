@@ -620,10 +620,19 @@ export const PARTS: Part[] = [
   }
 ];
 
-// Auto-assign default image paths for every part (can be overridden per-part
-// later by editing the entry). UI falls back to category icon if file missing.
+// Auto-assign a generated product-image URL for every part that has no images.
+// The route /api/product-image returns a 800×800 SVG with:
+//   white background · category icon · brand name · product name · 6T4 watermark
+// Parts with actual photography can override this by setting p.images explicitly.
 for (const p of PARTS) {
-  if (!p.images) p.images = [`/images/parts/${p.id}.webp`];
+  if (!p.images) {
+    const q = new URLSearchParams({
+      brand:    p.brand,
+      name:     p.name,
+      category: p.category,
+    });
+    p.images = [`/api/product-image?${q.toString()}`];
+  }
 }
 
 export const PARTS_BY_ID: Record<string, Part> = Object.fromEntries(PARTS.map((p) => [p.id, p]));
