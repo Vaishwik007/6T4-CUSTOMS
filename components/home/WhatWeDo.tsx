@@ -55,32 +55,59 @@ export function WhatWeDo() {
 
         <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
           {ITEMS.map(({ Icon, title, slug, body, accent }, i) => (
-            <Link
+            /* Garage-bay shutter wipe: clip from right side, staggered */
+            <motion.div
               key={title}
-              href={`/services#${slug}`}
-              data-cursor="cta"
-              className="group neon-edge relative block overflow-hidden bg-carbon/60 p-6 transition-all duration-200 hover:bg-neon-900/20"
+              className="relative"
+              initial={{ clipPath: "inset(0 100% 0 0)", opacity: 0 }}
+              whileInView={{ clipPath: "inset(0 0% 0 0)", opacity: 1 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.65, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
             >
-              <motion.article
-                initial={{ opacity: 0, y: 32 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.5, delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
+              <Link
+                href={`/services#${slug}`}
+                data-cursor="cta"
+                className="group neon-edge relative block h-full overflow-hidden bg-carbon/60 p-6 transition-all duration-200 hover:bg-neon-900/20"
               >
-                {/* corner ticks */}
+                {/* Red scan sweep — paints the card with light as it reveals */}
+                <motion.span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 left-0 z-[1] w-full bg-gradient-to-r from-transparent via-neon/22 to-transparent"
+                  initial={{ x: "-100%" }}
+                  whileInView={{ x: "100%" }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.1 + 0.15, ease: "easeOut" }}
+                />
+
+                {/* Corner ticks */}
                 <span className="pointer-events-none absolute left-0 top-0 h-2 w-2 border-l border-t border-neon" />
                 <span className="pointer-events-none absolute right-0 top-0 h-2 w-2 border-r border-t border-neon" />
                 <span className="pointer-events-none absolute bottom-0 left-0 h-2 w-2 border-b border-l border-neon" />
                 <span className="pointer-events-none absolute bottom-0 right-0 h-2 w-2 border-b border-r border-neon" />
 
-                <Icon className="h-6 w-6 text-neon transition-transform duration-300 group-hover:scale-110" />
+                {/* Icon spring-pop — appears after the wipe settles */}
+                <motion.span
+                  className="inline-block"
+                  initial={{ scale: 0, opacity: 0 }}
+                  whileInView={{ scale: 1, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 380,
+                    damping: 14,
+                    delay: i * 0.1 + 0.42
+                  }}
+                >
+                  <Icon className="h-6 w-6 text-neon transition-transform duration-300 group-hover:scale-110" />
+                </motion.span>
+
                 <h3 className="mt-6 text-display text-lg font-bold uppercase tracking-wider text-bone">
                   {title}
                 </h3>
                 <p className="mt-2 text-sm text-bone/60">{body}</p>
                 <p className="mt-6 text-[10px] uppercase tracking-[0.3em] text-neon/80">{accent}</p>
-              </motion.article>
-            </Link>
+              </Link>
+            </motion.div>
           ))}
         </div>
       </div>

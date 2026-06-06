@@ -38,20 +38,36 @@ export function StatsCounters() {
   return (
     <section className="relative bg-carbon/40 py-24 md:py-32">
       <div className="grid-bg absolute inset-0 opacity-20" />
+
+      {/* Section activation line — sweeps left-to-right as section enters viewport */}
+      <motion.div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 z-[1] h-[2px] origin-left bg-neon"
+        style={{ boxShadow: "0 0 16px rgba(255, 5, 0, 0.85)" }}
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+      />
+
       <div className="relative mx-auto max-w-[1440px] px-4 md:px-8">
         <SectionHeader
           eyebrow="By the Numbers"
           title="Receipts."
           align="center"
         />
+
         <div className="grid grid-cols-2 gap-px bg-white/5 md:grid-cols-4">
           {STATS.map((s, i) => (
+            /* Split-flap scoreboard flip — each cell rotates in on the X axis like a
+               departure board tile, staggered so they read left-to-right */
             <motion.div
               key={s.label}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, rotateX: 58, y: 24 }}
+              whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
+              transition={{ duration: 0.6, delay: i * 0.13, ease: [0.16, 1, 0.3, 1] }}
+              style={{ transformPerspective: 700 }}
               className="relative bg-black p-8 text-center md:p-12"
             >
               <div className="text-stencil text-5xl text-neon text-glow md:text-7xl">

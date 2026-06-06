@@ -74,11 +74,14 @@ function BuildCard({ build: b, index: i, total }: { build: FeaturedBuild; index:
   const [imgOk, setImgOk] = useState(!!b.afterImage);
 
   return (
+    /* 3D tilt slide-in — card swings in like it's being laid on the bench:
+       slides from the right with a -15° Y-axis lean that straightens on settle */
     <motion.article
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.4, delay: i * 0.06 }}
+      initial={{ opacity: 0, x: 64, rotateY: -15 }}
+      whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.6, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+      style={{ transformPerspective: 1000 }}
       className="embla__slide group neon-edge relative w-[320px] cursor-default overflow-hidden bg-carbon md:w-[420px]"
       data-cursor="cta"
       role="group"
